@@ -14,7 +14,8 @@ return [
     */
 
     'defaults' => [
-        'guard' => 'web',
+//        'guard' => 'web',
+        'guard' => 'custom',
         'passwords' => 'users',
     ],
 
@@ -45,6 +46,11 @@ return [
             'driver' => 'token',
             'provider' => 'users',
         ],
+
+        'custom' => [
+            'driver' => 'memcache',
+            'provider' => 'custom'
+        ]
     ],
 
     /*
@@ -67,8 +73,13 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => App\User::class,
+            'model' => App\CustomUser::class,
+//            'model' => App\User::class,
         ],
+
+        'custom' => [
+            'driver' => 'custom'
+        ]
 
         // 'users' => [
         //     'driver' => 'database',

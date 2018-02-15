@@ -68,8 +68,9 @@ class BootstrapData
         if ($bootstrap['user']) {
             $bootstrap['tracks'] = $this->getUserTracks();
             $bootstrap['playlists'] = $this->getUserPlaylists();
-            $bootstrap['user'] = $this->loadUserFollowedUsers($bootstrap['user']);
-            $bootstrap['user'] = $bootstrap['user']->toArray();
+//            $bootstrap['user'] = $this->loadUserFollowedUsers($bootstrap['user']);
+//            $bootstrap['user'] = $bootstrap['user']->toArray();
+            $bootstrap['user'] = (array)$bootstrap['user'];
         }
 
         return base64_encode(json_encode($bootstrap));
@@ -82,9 +83,9 @@ class BootstrapData
     {
         $user = $this->request->user();
 
-        if ($user && ! $user->relationLoaded('groups')) {
-            $user->load('groups');
-        }
+//        if ($user && ! $user->relationLoaded('groups')) {
+//            $user->load('groups');
+//        }
 
         return $user;
     }
@@ -109,7 +110,8 @@ class BootstrapData
      */
     private function getUserTracks()
     {
-        return $this->request->user()->tracks()->pluck('tracks.id')->toArray();
+        return array();
+//        return $this->request->user()->tracks()->pluck('tracks.id')->toArray();
     }
 
     /**
@@ -119,14 +121,15 @@ class BootstrapData
      */
     private function getUserPlaylists()
     {
-        return $this->request->user()
-            ->playlists()
-            ->with(['editors' => function(BelongsToMany $q) {
-                return $q->compact();
-            }])
-            ->select('playlists.id', 'playlists.name')
-            ->get()
-            ->toArray();
+        return array();
+//        return $this->request->user()
+//            ->playlists()
+//            ->with(['editors' => function(BelongsToMany $q) {
+//                return $q->compact();
+//            }])
+//            ->select('playlists.id', 'playlists.name')
+//            ->get()
+//            ->toArray();
     }
 
     /**
@@ -138,13 +141,15 @@ class BootstrapData
     {
         if ( ! $this->settings->get('i18n.enable')) return null;
 
-        //get user selected language
-        $userLang = $this->request->user() ? $this->request->user()->language : null;
+//        //get user selected language
+//        $userLang = $this->request->user() ? $this->request->user()->language : null;
+//
+//        //get default language if user has not selected any languages
+//        if ( ! $userLang) {
+//            $userLang = $this->settings->get('i18n.default_localization');
+//        }
 
-        //get default language if user has not selected any languages
-        if ( ! $userLang) {
-            $userLang = $this->settings->get('i18n.default_localization');
-        }
+        $userLang = $this->settings->get('i18n.default_localization');
 
         if ($userLang) {
             return $this->localization->where('name', $userLang)->first();
