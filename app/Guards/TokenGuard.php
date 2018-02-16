@@ -138,6 +138,7 @@ class TokenGuard implements StatefulGuard, SupportsBasicAuth
     {
         $data = NULL;
         if (isset($_COOKIE['___media_xcred___']))
+//            $data = $this->request->session()->get('___media_xcred___');
             $data = $_COOKIE['___media_xcred___'];
         return (!empty($data) ? $data : NULL);
     }
