@@ -2,12 +2,11 @@
 
 namespace App\Providers;
 
-use App\Http\Validators\EmailConfirmedValidator;
 use Validator;
 use Carbon\Carbon;
 use App\Services\Settings;
-use App\Http\Validators\HashValidator;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Schema;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -18,6 +17,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        Schema::defaultStringLength(191);
         $this->registerCustomValidators();
         $this->setDefaultDateLocale();
     }
