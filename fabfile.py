@@ -97,7 +97,7 @@ def deploy():
     update production environment
     :return:
     """
-    with cd('/var/www/html/admin'):
+    with cd('/var/www/html/musicApp'):
         sudo('git pull')
         run('php artisan config:clear')
         run('php artisan config:cache')
@@ -110,7 +110,7 @@ def full_deploy():
     update production environment
     :return:
     """
-    with cd('/var/www/html/admin'):
+    with cd('/var/www/html/musicApp'):
         sudo('git pull')
         sudo('composer install')
         migrate(is_local=False)
