@@ -22,7 +22,7 @@ class UserConnection
 
     public function fetchUserByCredentials($username, $token, $data) {
 
-        $storedData = array('token'=>$token, 'username'=>$data['username'], 'email'=>$data['email']);
+        $storedData = array('token'=>$token, 'username'=>$data['username'], 'email'=>$data['email'], 'id'=>$data['id']);
         if($this->create($username, $storedData)) {
             $userData = $this->connection->get($username);
 
