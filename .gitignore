@@ -9,6 +9,6 @@ npm-debug.log
 yarn-error.log
 .env
 *.pyc
-config/api.php
-config/token.php
+server/config/api.php
+server/config/token.php
 dist/
