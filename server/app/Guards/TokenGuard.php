@@ -68,7 +68,6 @@ class TokenGuard implements StatefulGuard, SupportsBasicAuth
      */
     public function user()
     {
-        dd(Auth::id());
         if ($username=$this->getSessionParams()) {
             $this->user = $this->provider->getUser($username);
         }
@@ -208,6 +207,7 @@ class TokenGuard implements StatefulGuard, SupportsBasicAuth
         $this->lastAttempted = $user = $this->provider->retrieveByCredentials($credentials);
 
         if ($this->hasValidCredentials($user, $credentials)) {
+            \Log::info($user);
             $this->login($user, $remember);
 
             return true;

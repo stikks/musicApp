@@ -1,7 +1,7 @@
 <?php namespace App\Http\Controllers;
 
 use Cache;
-use App\User;
+use App\UserInfo as User;
 use App\Album;
 use App\Track;
 use App\Artist;

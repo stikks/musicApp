@@ -4,15 +4,13 @@ use App\Account;
 use App\ApiRequest;
 use App\Http\Requests\ModifyUsers;
 use App\Playlist;
-use App\Services\Auth\UserRepository;
+use App\Services\Auth\UserInfoRepository as UserRepository;
 use Auth;
 use ClassesWithParents\D;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
-use App\User;
+use App\UserInfo as User;
 use Illuminate\Http\Request;
-use App\Services\DBConnector;
-use DB;
 
 class UsersController extends Controller {
 
@@ -72,22 +70,22 @@ class UsersController extends Controller {
      */
     public function show($id)
     {
-        $currUser = $this->request->user()->info;
+//        $user = $this->request->user();
 
-        $response = $this->apiRequest->basicGet("users/$currUser->id");
+//        $response = $this->apiRequest->basicGet("users/$currUser->id");
+//
+//        $user = $response['body'];
 
-        $user = $response['body'];
+        $user = $this->model->with(['social_profiles', 'followedUsers', 'followers', 'playlists' => function($q) {
+            $q->with(['tracks.album' => function($query) {
+                return $query->limit(1);
+            }])->where('public', 1)->whereHas('tracks');
+        }])->findOrFail($id);
 
-//        $user = $this->model->with(['groups', 'social_profiles', 'followedUsers', 'followers', 'playlists' => function($q) {
-//            $q->with(['tracks.album' => function($query) {
-//                return $query->limit(1);
-//            }])->where('public', 1)->whereHas('tracks');
-//        }])->findOrFail($id);
-
-        $user->social_profiles = DBConnector::where('social_profiles', ['user_id'=>$user->id], false);
-        $user->followers = DBConnector::where('follows', ['followed_id'=>$user->id], false);
-        $user->followedUsers = DBConnector::where('follows', ['follower_id'=>$user->id], false);
-        $user->playlists = $this->setPlaylistImage($this->request->user()->playlists());
+//        $user->social_profiles = DBConnector::where('social_profiles', ['user_id'=>$user->id], false);
+//        $user->followers = DBConnector::where('follows', ['followed_id'=>$user->id], false);
+//        $user->followedUsers = DBConnector::where('follows', ['follower_id'=>$user->id], false);
+//        $user->playlists = $this->setPlaylistImage($this->request->user()->playlists());
 
 //        $this->authorize('show', $user);
 
@@ -188,16 +186,16 @@ class UsersController extends Controller {
      */
     private function setPlaylistImage($playlists)
     {
-        return $playlists->map(function($playlist) {
-//            if ( ! $playlist->getAttribute('image') && isset($playlist->tracks->first()->album->image)) {
-//                $playlist->image = $playlist->tracks->first()->album->image;
-//            }
-//
-//            if ( ! $playlist->image) {
-//                $playlist->image = url('assets/images/default/artist_small.jpg');
-//            }
-//
-//            unset($playlist->tracks);
+        return $playlists->map(function(Playlist $playlist) {
+            if ( ! $playlist->getAttribute('image') && isset($playlist->tracks->first()->album->image)) {
+                $playlist->image = $playlist->tracks->first()->album->image;
+            }
+
+            if ( ! $playlist->image) {
+                $playlist->image = url('assets/images/default/artist_small.jpg');
+            }
+
+            unset($playlist->tracks);
             $playlist->image = url('assets/images/default/artist_small.jpg');
 
             return $playlist;

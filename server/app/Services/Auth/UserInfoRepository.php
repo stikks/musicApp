@@ -179,8 +179,8 @@ class UserInfoRepository
             'first_name'  => isset($params['first_name']) ? $params['first_name'] : null,
             'last_name'   => isset($params['last_name']) ? $params['last_name'] : null,
             'language'    => isset($params['language']) ? $params['language'] : $this->settings->get('i18n.default_localization'),
-            'country'     => isset($params['country']) ? $params['country'] : null,
-            'timezone'    => isset($params['timezone']) ? $params['timezone'] : null,
+            'country'     => isset($params['country']) ? $params['country'] : 'Nigeria',
+            'timezone'    => isset($params['timezone']) ? $params['timezone'] : 'Africa/Lagos',
 //            'confirmed'   => isset($params['confirmed']) ? $params['confirmed'] : 1,
 //            'confirmation_code' => isset($params['confirmation_code']) ? $params['confirmation_code'] : null,
         ];

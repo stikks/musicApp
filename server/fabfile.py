@@ -52,14 +52,14 @@ def update_environs(message='updating...'):
     migrate()
 
 
-def push(message='updating...', should_commit=True):
+def push(message='updating...', should_commit=True, branch='master'):
     """
     push changes
     :return:
     """
     if should_commit is True:
         commit(message)
-    local("git push")
+    local("git push -u origin %s" % branch)
 
 
 def start_services(service_paths=list()):

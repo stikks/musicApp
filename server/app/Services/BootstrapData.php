@@ -73,7 +73,6 @@ class BootstrapData
             $bootstrap['tracks'] = $this->getUserTracks();
             $bootstrap['playlists'] = $this->getUserPlaylists();
             $bootstrap['user'] = $this->loadUserFollowedUsers($bootstrap['user']);
-            $bootstrap['user'] = (array)$bootstrap['user']->info;
         }
 
         return base64_encode(json_encode($bootstrap));
@@ -85,6 +84,8 @@ class BootstrapData
     private function getCurrentUser()
     {
         $user = $this->request->user();
+//        $info = $this->request->user();
+//        $user = UserInfo::where('reference', $info->username)->first();
 
 //        if ($user && ! $user->relationLoaded('groups')) {
 //            $user->load('groups');
@@ -116,9 +117,10 @@ class BootstrapData
     {
 //        return $this->request->user()->tracks();
         $user = $this->request->user();
+//        $user = UserInfo::where('reference', $info->username)->first();
 //        $artist = DB::table('artists')->where('user_id', $user->id)->first();
 //        return !is_null($artist) ? DB::table('artists')->where('user_id', $user->id)->get() : array();
-        return $this->request->user()->tracks()->pluck('tracks.id')->toArray();
+        return $user->tracks()->pluck('tracks.id')->toArray();
     }
 
     /**
@@ -129,8 +131,9 @@ class BootstrapData
     private function getUserPlaylists()
     {
 //        return $this->request->user()->getUserPlaylists();
-        return $this->request->user()
-            ->playlists()
+        $user = $this->request->user();
+//        $user = UserInfo::where('reference', $info->username)->first();
+        return $user->playlists()
             ->with(['editors' => function(BelongsToMany $q) {
                 return $q->compact();
             }])
@@ -149,7 +152,9 @@ class BootstrapData
         if ( ! $this->settings->get('i18n.enable')) return null;
 
         //get user selected language
-        $userLang = $this->request->user() ? $this->request->user()->language : null;
+        $user = $this->request->user();
+//        $user = UserInfo::where('reference', $info->username)->first();
+        $userLang = $user ? $user->language : null;
 
         //get default language if user has not selected any languages
         if ( ! $userLang) {

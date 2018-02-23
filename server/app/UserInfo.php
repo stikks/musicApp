@@ -16,9 +16,8 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Contracts\Auth\Authenticatable;
 
-class UserInfo extends User implements Authenticatable
+class UserInfo extends User
 {
-
     use Notifiable, FormatsPermissions;
 
     protected $table = 'user_info';
@@ -96,13 +95,13 @@ class UserInfo extends User implements Authenticatable
         return $this->belongsToMany('App\Playlist')->withPivot('owner');
     }
 
-    /*
-     * get user playlists
-     * @return array
-     */
-    public function getUserPlaylists() {
-        return $this->belongsToMany('App\Playlist')->where('owner', 1)->withPivot('owner');
-    }
+//    /*
+//     * get user playlists
+//     * @return array
+//     */
+//    public function getUserPlaylists() {
+//        return $this->belongsToMany('App\Playlist')->where('owner', 1)->withPivot('owner');
+//    }
 
     /**
      * Get user avatar.
@@ -187,7 +186,7 @@ class UserInfo extends User implements Authenticatable
      */
     public function scopeCompact(Builder $query)
     {
-        return $query->select('users.id', 'users.avatar', 'users.first_name', 'users.last_name', 'users.reference');
+        return $query->select('user_info.id', 'user_info.avatar', 'user_info.first_name', 'user_info.last_name', 'user_info.reference');
     }
 
     /**
