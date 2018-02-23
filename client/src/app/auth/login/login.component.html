@@ -1,0 +1,53 @@
+<form class="auth-page" id="auth-page" (ngSubmit)="login()">
+    <div class="many-inputs auth-panel">
+        <loading-indicator class="overlay" [isVisible]="isLoading"></loading-indicator>
+
+        <a class="logo" [routerLink]="['/']"><img [src]="settings.get('branding.site_logo')" alt="logo"></a>
+
+        <div class="general-error" *ngIf="errors.general">{{errors.general}}</div>
+
+        <div class="input-container">
+            <label for="username" class="hidden"></label>
+            <input type="text" [(ngModel)]="model.username" name="username" id="username" required placeholder="Username" trans-placeholder>
+            <p class="error username-error" *ngIf="errors.username">{{errors.username}}</p>
+        </div>
+
+        <div class="input-container">
+            <label for="password" class="hidden"></label>
+            <input type="password" [(ngModel)]="model.password" name="password" id="password" required placeholder="Password" trans-placeholder>
+            <a class="forgot-password" [routerLink]="['/forgot-password']" trans>Forgot?</a>
+            <p class="error password-error" *ngIf="errors.password">{{errors.password}}</p>
+        </div>
+
+        <div class="remember-and-login-row">
+            <div class="remember-me-checkbox">
+                <input type="checkbox" class="pretty-checkbox" name="remember" id="remember" [(ngModel)]="model.remember">
+                <label for="remember" trans>Remember Me</label>
+            </div>
+
+            <div class="login-button">
+                <button class="button primary submit-button" type="submit" trans>Login</button>
+            </div>
+        </div>
+
+        <ng-container *ngIf="!settings.get('registration.disable')">
+            <p class="info-row">
+                <span trans>Don't have an account?</span>
+                <a class="register-link" [routerLink]="['/register']" trans>Register here.</a>
+            </p>
+
+            <div class="social-icons center">
+                <button type="button" (click)="socialAuth.loginWith('facebook')" *ngIf="settings.get('social.facebook.enable')" class="social-icon no-style facebook" tooltip="Login with facebook">
+                    <img src="{{settings.get('base_url')+'/assets/images/social-icons/facebook.png'}}">
+                </button>
+                <button type="button" (click)="socialAuth.loginWith('google')" *ngIf="settings.get('social.google.enable')" class="social-icon no-style googleplus" tooltip="Login with google">
+                    <img src="{{settings.get('base_url')+'/assets/images/social-icons/google-plus.png'}}">
+                </button>
+                <button type="button" (click)="socialAuth.loginWith('twitter')" *ngIf="settings.get('social.twitter.enable')" class="social-icon no-style twitter" tooltip="Login with twitter">
+                    <img src="{{settings.get('base_url')+'/assets/images/social-icons/twitter.png'}}">
+                </button>
+            </div>
+        </ng-container>
+    </div>
+</form>
+

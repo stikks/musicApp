@@ -11,3 +11,4 @@ yarn-error.log
 *.pyc
 config/api.php
 config/token.php
+dist/
