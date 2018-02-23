@@ -13,9 +13,9 @@ class RenameAvatarUrlColumn extends Migration
      */
     public function up()
     {
-//        Schema::table('users', function (Blueprint $table) {
-//            $table->renameColumn('avatar_url', 'avatar');
-//        });
+        Schema::table('user_info', function (Blueprint $table) {
+            $table->renameColumn('avatar_url', 'avatar');
+        });
     }
 
     /**
@@ -25,8 +25,8 @@ class RenameAvatarUrlColumn extends Migration
      */
     public function down()
     {
-//        Schema::table('users', function (Blueprint $table) {
-//            $table->renameColumn('avatar', 'avatar_url');
-//        });
+        Schema::table('user_info', function (Blueprint $table) {
+            $table->renameColumn('avatar', 'avatar_url');
+        });
     }
 }

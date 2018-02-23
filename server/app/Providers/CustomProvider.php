@@ -2,12 +2,13 @@
 
 namespace App\Providers;
 
+use App\User;
 use Illuminate\Contracts\Auth\UserProvider;
 use App\UserConnection;
 use App\ApiRequest;
 use Illuminate\Contracts\Auth\Authenticatable;
 use App\Account;
-use Log;
+use App\UserInfo;
 
 class CustomProvider implements UserProvider
 {
@@ -63,6 +64,7 @@ class CustomProvider implements UserProvider
             return null;
         }
         $user = (array)$resp['body'];
+
         return $this->model->fetchUserByCredentials($user['username'], $token, $user);
     }
 
@@ -74,17 +76,19 @@ class CustomProvider implements UserProvider
      */
     public function retrieveByCredentials(array $credentials)
     {
-        try{
-            $resp = $this->apiRequest->postData('auth/login', $credentials);
+//        try{
+        \Log::info($credentials);
+        $resp = $this->apiRequest->postData('auth/login', $credentials);
 
-            if (!$resp['status']) {
-                return null;
-            };
-
-            return $this->retrieveUser($resp['body']->access_token);
-        } catch (\Exception $e) {
+        if (!$resp['status']) {
             return null;
-        }
+        };
+
+        $user = $this->retrieveUser($resp['body']->access_token);
+        return $user;
+//        } catch (\Exception $e) {
+//            return null;
+//        }
     }
 
     /**
@@ -100,12 +104,13 @@ class CustomProvider implements UserProvider
         return $user->getAuthIdentifier() == $credentials['username'];
     }
 
-    public function getUser($username) {
+    public function getUser($sessionId) {
 
-        if ($resp=$this->model->find($username)) {
-            $account = new Account($resp);
-            $account->username = $account->info->username;
-            return $account;
+        if ($resp=$this->model->find($sessionId)) {
+            return UserInfo::where('reference', $sessionId)->first();
+//            $account = new Account($resp);
+//            $account->username = $account->info->username;
+//            return $account;
         };
         return null;
     }

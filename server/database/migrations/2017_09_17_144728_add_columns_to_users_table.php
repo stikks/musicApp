@@ -13,11 +13,11 @@ class AddColumnsToUsersTable extends Migration
      */
     public function up()
     {
-//        Schema::table('users', function (Blueprint $table) {
-//            $table->string('language')->nullable();
-//            $table->string('country')->nullable();
-//            $table->string('timezone')->nullable();
-//        });
+        Schema::table('user_info', function (Blueprint $table) {
+            $table->string('language')->nullable();
+            $table->string('country')->nullable();
+            $table->string('timezone')->nullable();
+        });
     }
 
     /**
@@ -27,10 +27,10 @@ class AddColumnsToUsersTable extends Migration
      */
     public function down()
     {
-//        Schema::table('users', function (Blueprint $table) {
-//            $table->dropColumn('language');
-//            $table->dropColumn('country');
-//            $table->dropColumn('timezone');
-//        });
+        Schema::table('user_info', function (Blueprint $table) {
+            $table->dropColumn('language');
+            $table->dropColumn('country');
+            $table->dropColumn('timezone');
+        });
     }
 }

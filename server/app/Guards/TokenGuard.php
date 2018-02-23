@@ -34,6 +34,7 @@ class TokenGuard implements StatefulGuard, SupportsBasicAuth
      */
     public function check()
     {
+        dd($this->user());
         return ! is_null($this->user());
     }
 
@@ -55,6 +56,7 @@ class TokenGuard implements StatefulGuard, SupportsBasicAuth
     public function user()
     {
         if ($username=$this->getSessionParams()) {
+            dd($this->provider->getUser($username));
             return $this->provider->getUser($username);
         }
         return $this->user;

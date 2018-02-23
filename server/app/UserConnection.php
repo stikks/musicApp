@@ -22,12 +22,13 @@ class UserConnection
 
     public function fetchUserByCredentials($username, $token, $data) {
 
-        $data['token'] = $token;
-        if($this->create($username, $data)) {
+        $storedData = array('token'=>$token, 'username'=>$data['username'], 'email'=>$data['email']);
+        if($this->create($username, $storedData)) {
             $userData = $this->connection->get($username);
 
             if (! is_null($userData)) {
-                $user = new Account($userData);
+                $user = UserInfo::where('reference', $storedData['username'])->first();
+//                $user = new Account($userData);
                 return $user;
             }
         }

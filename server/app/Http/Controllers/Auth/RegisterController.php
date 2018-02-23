@@ -5,7 +5,7 @@ use App\User;
 use App\Services\Settings;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Services\Auth\UserRepository;
+use App\Services\Auth\UserInfoRepository;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Mail;
@@ -25,14 +25,14 @@ class RegisterController extends Controller
     /**
      * UserRepository service instance.
      *
-     * @var UserRepository
+     * @var UserInfoRepository
      */
     private $repository;
 
     /**
      * ApiRepository service instance.
      *
-     * @var UserRepository
+     * @var UserInfoRepository
      */
     private $apiRequest;
 
@@ -40,10 +40,10 @@ class RegisterController extends Controller
      * RegisterController constructor.
      *
      * @param Settings $settings
-     * @param UserRepository $repository
+     * @param UserInfoRepository $repository
      * @param ApiRequest $apiRequest
      */
-    public function __construct(Settings $settings, UserRepository $repository, ApiRequest $apiRequest)
+    public function __construct(Settings $settings, UserInfoRepository $repository, ApiRequest $apiRequest)
     {
         $this->settings = $settings;
         $this->repository = $repository;
@@ -100,6 +100,8 @@ class RegisterController extends Controller
 
         if ($response['status'] == true) {
 //            $this->guard()->attempt($data);
+            $data['reference'] = $data['username'];
+            $this->create($data);
             return $this->success();
 //            return $this->registered($request, \Auth::user()->info);
         }
