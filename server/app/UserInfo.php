@@ -167,9 +167,9 @@ class UserInfo extends User implements Authenticatable
     {
         $permissions = $this->permissions;
 
-        foreach($this->groups as $group) {
+        /*foreach($this->groups as $group) {
             $permissions = array_merge($group->permissions, $permissions);
-        }
+        }*/
 
         if (array_key_exists('admin', $permissions) && $permissions['admin']) return true;
 

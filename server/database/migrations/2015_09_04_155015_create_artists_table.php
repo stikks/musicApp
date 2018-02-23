@@ -15,7 +15,7 @@ class CreateArtistsTable extends Migration {
 		Schema::create('artists', function(Blueprint $table)  {
 			$table->increments('id');
 			$table->string('name')->unique();
-			$table->integer('user_id')->unsigned();
+			$table->integer('user_info_id')->unsigned();
 			$table->integer('spotify_followers')->nullable()->unsigned();
 			$table->tinyInteger('spotify_popularity')->nullable()->unsigned()->index();
 			$table->string('image_small')->nullable();

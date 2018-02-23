@@ -76,19 +76,18 @@ class CustomProvider implements UserProvider
      */
     public function retrieveByCredentials(array $credentials)
     {
-//        try{
-        \Log::info($credentials);
-        $resp = $this->apiRequest->postData('auth/login', $credentials);
+        try{
+            $resp = $this->apiRequest->postData('auth/login', $credentials);
 
-        if (!$resp['status']) {
+            if (!$resp['status']) {
+                return null;
+            };
+
+            $user = $this->retrieveUser($resp['body']->access_token);
+            return $user;
+        } catch (\Exception $e) {
             return null;
-        };
-
-        $user = $this->retrieveUser($resp['body']->access_token);
-        return $user;
-//        } catch (\Exception $e) {
-//            return null;
-//        }
+        }
     }
 
     /**

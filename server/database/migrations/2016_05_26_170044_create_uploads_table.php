@@ -19,7 +19,7 @@ class CreateUploadsTable extends Migration
             $table->string('file_size');
             $table->string('mime');
             $table->string('extension');
-            $table->string('user_id')->index();
+            $table->string('user_info_id')->index();
             $table->string('url')->nullable();
             $table->string('thumbnail_url')->nullable();
             $table->timestamps();

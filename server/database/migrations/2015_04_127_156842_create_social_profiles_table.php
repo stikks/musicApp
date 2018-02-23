@@ -15,14 +15,14 @@ class CreateSocialProfilesTable extends Migration {
 		Schema::create('social_profiles', function(Blueprint $table)
 		{
 			$table->increments('id');
-			$table->integer('user_id');
+			$table->integer('user_info_id');
 			$table->string('service_name');
 			$table->string('user_service_id')->unique();
 			$table->string('username');
 			$table->timestamps();
 
-			$table->index('user_id');
-			$table->unique(['user_id', 'service_name']);
+			$table->index('user_info_id');
+			$table->unique(['user_info_id', 'service_name']);
 		});
 	}
 

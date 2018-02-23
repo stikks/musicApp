@@ -3,7 +3,7 @@
 namespace App\Policies;
 
 use App\Playlist;
-use App\Account as User;
+use App\UserInfo as User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Database\Eloquent\Collection;
 

@@ -13,12 +13,19 @@ use Illuminate\Http\Request;
 use Auth;
 use Illuminate\Contracts\Auth\SupportsBasicAuth;
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Auth\GuardHelpers;
+use Illuminate\Support\Traits\Macroable;
+use Illuminate\Auth\Events;
+use Illuminate\Auth\AuthenticationException;
 
 class TokenGuard implements StatefulGuard, SupportsBasicAuth
 {
-    private $provider;
-    private $request;
-    private $user=null;
+    use GuardHelpers, Macroable;
+
+    protected $provider;
+    protected $request;
+    protected $user=null;
+    protected $lastAttempted;
 
     public function __construct(UserProvider $provider, Request $request)
     {
@@ -28,24 +35,30 @@ class TokenGuard implements StatefulGuard, SupportsBasicAuth
     }
 
     /**
-     * Determine if the current user is authenticated.
+     * Fire the authenticated event if the dispatcher is set.
      *
-     * @return bool
+     * @param  \Illuminate\Contracts\Auth\Authenticatable  $user
+     * @return void
      */
-    public function check()
+    protected function fireAuthenticatedEvent($user)
     {
-        dd($this->user());
-        return ! is_null($this->user());
+        if (isset($this->events)) {
+            $this->events->dispatch(new Events\Authenticated($user));
+        }
     }
 
     /**
-     * Determine if the current user is a guest.
+     * Fire the failed authentication attempt event with the given arguments.
      *
-     * @return bool
+     * @param  \Illuminate\Contracts\Auth\Authenticatable|null  $user
+     * @param  array  $credentials
+     * @return void
      */
-    public function guest()
+    protected function fireFailedEvent($user, array $credentials)
     {
-        return ! $this->check();
+        if (isset($this->events)) {
+            $this->events->dispatch(new Events\Failed($user, $credentials));
+        }
     }
 
     /**
@@ -55,23 +68,11 @@ class TokenGuard implements StatefulGuard, SupportsBasicAuth
      */
     public function user()
     {
+        dd(Auth::id());
         if ($username=$this->getSessionParams()) {
-            dd($this->provider->getUser($username));
-            return $this->provider->getUser($username);
+            $this->user = $this->provider->getUser($username);
         }
         return $this->user;
-    }
-
-    /**
-     * Get the ID for the currently authenticated user.
-     *
-     * @return int|null
-     */
-    public function id()
-    {
-        if ($this->check()) {
-            return $this->user()->getAuthIdentifier();
-        }
     }
 
     /**
@@ -107,12 +108,38 @@ class TokenGuard implements StatefulGuard, SupportsBasicAuth
 //        $this->user = $user;
 //        $this->request->session()->put('___media_xcred___', $user->getAuthIdentifier());
 //    }
+//    public function setUser(Authenticatable $user)
+//    {
+//        $this->user = $user;
+//        setcookie('___media_xcred___', $user->getAuthIdentifier(), 2147483647, '/', config('api.cookie_domain'));
+//    }
+
+    /**
+     * Set the current user.
+     *
+     * @param  \Illuminate\Contracts\Auth\Authenticatable  $user
+     * @return $this
+     */
     public function setUser(Authenticatable $user)
     {
         $this->user = $user;
+
+        $this->fireAuthenticatedEvent($user);
+
         setcookie('___media_xcred___', $user->getAuthIdentifier(), 2147483647, '/', config('api.cookie_domain'));
+
+        return $this;
     }
 
+    /**
+     * Return the currently cached user.
+     *
+     * @return \Illuminate\Contracts\Auth\Authenticatable|null
+     */
+    public function getUser()
+    {
+        return $this->user();
+    }
 
     public function getToken() {
         $user = Auth::user();
@@ -257,7 +284,30 @@ class TokenGuard implements StatefulGuard, SupportsBasicAuth
         // TODO: Implement onceBasic() method.
     }
 
-    public function authenticate() {
-        return true;
+    /**
+     * Determine if the current user is authenticated.
+     *
+     * @return \Illuminate\Contracts\Auth\Authenticatable
+     *
+     * @throws \Illuminate\Auth\AuthenticationException
+     */
+    public function authenticate()
+    {
+        if (! is_null($user = $this->user())) {
+            return $user;
+        }
+
+        throw new AuthenticationException;
     }
+
+    /**
+     * Get the user provider used by the guard.
+     *
+     * @return \Illuminate\Contracts\Auth\UserProvider
+     */
+    public function getProvider()
+    {
+        return $this->provider;
+    }
+
 }

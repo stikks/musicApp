@@ -12,13 +12,13 @@ class CreateTrackUserTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('track_user', function(Blueprint $table) {
+		Schema::create('track_user_info', function(Blueprint $table) {
 			$table->increments('id');
 			$table->integer('track_id')->unsigned();
-			$table->integer('user_id')->unsigned();
+			$table->integer('user_info_id')->unsigned();
 			$table->timestamps();
 
-			$table->unique(['track_id', 'user_id']);
+			$table->unique(['track_id', 'user_info_id']);
 		});
 	}
 
@@ -29,7 +29,7 @@ class CreateTrackUserTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('track_user');
+		Schema::drop('track_user_info');
 	}
 
 }

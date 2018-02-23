@@ -13,7 +13,7 @@ class SetPlaylistUserOwnerColumnDefaultToZero extends Migration
      */
     public function up()
     {
-        Schema::table('playlist_user', function (Blueprint $table) {
+        Schema::table('playlist_user_info', function (Blueprint $table) {
             $table->boolean('owner')->unsigned()->default(0)->change();
         });
     }
@@ -25,7 +25,7 @@ class SetPlaylistUserOwnerColumnDefaultToZero extends Migration
      */
     public function down()
     {
-        Schema::table('playlist_user', function (Blueprint $table) {
+        Schema::table('playlist_user_info', function (Blueprint $table) {
             $table->boolean('owner')->unsigned()->default(1)->change();
         });
     }

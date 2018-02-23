@@ -12,13 +12,13 @@ class CreatePlaylistUserTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('playlist_user', function(Blueprint $table) {
+		Schema::create('playlist_user_info', function(Blueprint $table) {
 			$table->increments('id');
 			$table->integer('playlist_id')->unsigned();
-			$table->integer('user_id')->unsigned();
+			$table->integer('user_info_id')->unsigned();
 			$table->boolean('owner')->unsigned()->default(1)->index();
 
-			$table->unique(['playlist_id', 'user_id']);
+			$table->unique(['playlist_id', 'user_info_id']);
 		});
 	}
 
@@ -29,7 +29,7 @@ class CreatePlaylistUserTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('playlist_user');
+		Schema::drop('playlist_user_info');
 	}
 
 }

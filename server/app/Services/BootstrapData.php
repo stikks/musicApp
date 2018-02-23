@@ -6,6 +6,7 @@ use App\Localization;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use App\Account;
+use App\UserInfo;
 
 
 class BootstrapData
@@ -98,12 +99,12 @@ class BootstrapData
      * @param User $user
      * @return User
      */
-    private function loadUserFollowedUsers(Account $user)
+    private function loadUserFollowedUsers(UserInfo $user)
     {
-        return $user;
-//        return $user->load(['followedUsers' => function(BelongsToMany $q) {
-//            return $q->select('users.id', 'users.avatar');
-//        }]);
+//        return $user;
+        return $user->load(['followedUsers' => function(BelongsToMany $q) {
+            return $q->select('user_info.id', 'user_info.avatar');
+        }]);
     }
 
     /**
@@ -113,11 +114,11 @@ class BootstrapData
      */
     private function getUserTracks()
     {
-        return $this->request->user()->tracks();
-//        $user = $this->request->user()->info;
+//        return $this->request->user()->tracks();
+        $user = $this->request->user();
 //        $artist = DB::table('artists')->where('user_id', $user->id)->first();
 //        return !is_null($artist) ? DB::table('artists')->where('user_id', $user->id)->get() : array();
-//        return $this->request->user()->tracks()->pluck('tracks.id')->toArray();
+        return $this->request->user()->tracks()->pluck('tracks.id')->toArray();
     }
 
     /**
@@ -127,15 +128,15 @@ class BootstrapData
      */
     private function getUserPlaylists()
     {
-        return $this->request->user()->getUserPlaylists();
-//        return $this->request->user()
-//            ->playlists()
-//            ->with(['editors' => function(BelongsToMany $q) {
-//                return $q->compact();
-//            }])
-//            ->select('playlists.id', 'playlists.name')
-//            ->get()
-//            ->toArray();
+//        return $this->request->user()->getUserPlaylists();
+        return $this->request->user()
+            ->playlists()
+            ->with(['editors' => function(BelongsToMany $q) {
+                return $q->compact();
+            }])
+            ->select('playlists.id', 'playlists.name')
+            ->get()
+            ->toArray();
     }
 
     /**

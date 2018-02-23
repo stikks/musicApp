@@ -1,6 +1,6 @@
 <?php namespace App\Policies;
 
-use App\Account as User;
+use App\UserInfo as User;
 use App\Upload;
 use Illuminate\Auth\Access\HandlesAuthorization;
 

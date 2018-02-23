@@ -1,6 +1,6 @@
 <?php namespace App\Policies;
 
-use App\User;
+use App\UserInfo as User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class GroupPolicy
