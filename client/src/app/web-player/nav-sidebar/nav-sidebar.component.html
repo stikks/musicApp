@@ -64,7 +64,7 @@
         </ng-container>
     </div>
 
-    <div class="your-music-container">
+    <div class="your-music-container" *ngIf="currentUser.isLoggedIn()">
         <div class="title" trans>Your Music</div>
         <custom-menu position="sidebar-secondary" class="sidebar-nav"></custom-menu>
     </div>
@@ -72,9 +72,17 @@
     <div class="separator"></div>
 
     <div class="playlists-container">
+        <div class="header" *ngIf="currentUser.isLoggedIn() && !currentUser.hasRequest() && !currentUser.hasPermission('albums.create')">
+            <button (click)="openArtistRequestModal()">
+                Become an Artist
+            </button>
+        </div>
+    </div>
+
+    <div class="playlists-container">
         <div class="header">
             <div class="name" trans>Playlists</div>
-            <button class="no-style new-playlist-button" (click)="openNewPlaylistModal()">
+            <button *ngIf="currentUser.isLoggedIn()" class="no-style new-playlist-button" (click)="openNewPlaylistModal()">
                 <svg-icon name="playlist-add"></svg-icon>
             </button>
         </div>

@@ -1,6 +1,11 @@
 import {Injectable} from '@angular/core';
 import {User} from "../shared/types/models/User";
 import {Group} from "../shared/types/models/Group";
+// import {HttpClient, HttpParams} from "@angular/common/http";
+
+import { Cookie } from 'ng2-cookies/ng2-cookies';
+
+import * as $ from "jquery";
 
 @Injectable()
 export class CurrentUser {
@@ -26,6 +31,13 @@ export class CurrentUser {
      * redirect to login page, if any.
      */
     public redirectUri?: string;
+
+    /*
+     * has pending request
+     */
+    public artist_request: boolean;
+
+    // constructor(private httpClient: HttpClient){}
 
     /**
      * Get property of currently logged in user model.
@@ -120,6 +132,26 @@ export class CurrentUser {
     public init(params: {user?: User, guestsGroup: Group}) {
         this.guestsGroup = params.guestsGroup;
         this.assignCurrent(params.user);
+        let current_id = this.current.id.toString();
+        if (this.isLoggedIn() && !Cookie.get(this.current.id.toString())) {
+            $.ajax({
+                url: "/secure/artist_requests",
+                type: "GET",
+                success: function(resp, body){
+                    // if (resp.data === null) {
+                    //     this.artist_request = false;
+                    // }
+                    // else {
+                    //     this.artist_request = true;
+                    // }
+                    let response = resp.data === null;
+                    Cookie.set(current_id, response.toString());
+                    this.artist_request = resp.data === null
+                }, error: function(err) {
+                    console.warn(err)
+                }
+            });
+        }
     }
 
     /**
@@ -140,5 +172,18 @@ export class CurrentUser {
         this.cachedPermissions = Object.assign(permissions, this.get('permissions') || {});
 
         return this.cachedPermissions;
+    }
+
+    public hasSubscription(): Object {
+        return this;
+    }
+
+    public hasRequest(): Object {
+        // this.httpClient.get('artist_requests').subscribe(data => {
+        //     console.log(data);
+        // }, err => {
+        //     console.log(err);
+        // });
+        return Boolean(Cookie.get(this.current.id.toString()));
     }
 }

@@ -101,6 +101,10 @@ import {SoundcloudStrategy} from "./player/strategies/soundcloud-strategy.servic
 import { AdHostComponent } from './ad-host/ad-host.component';
 import {TrackPlays} from "./player/track-plays.service";
 
+// artist requests
+import {ArtistRequests} from "./artists/artist-requests.service";
+import {CreateRequestModalComponent} from './artists/create-artist-modal/create-artist-modal.component'
+
 @NgModule({
     imports: [
         SharedModule,
@@ -161,7 +165,9 @@ import {TrackPlays} from "./player/track-plays.service";
         MobilePlayerControlsComponent,
         UserLibraryComponent,
         LibraryPlaylistsComponent,
-        AdHostComponent
+        AdHostComponent,
+
+        CreateRequestModalComponent //create new artist request component
     ],
     entryComponents: [
         AlbumContextMenuComponent,
@@ -172,6 +178,8 @@ import {TrackPlays} from "./player/track-plays.service";
         CrupdatePlaylistModalComponent,
         ShareMediaItemModalComponent,
         LyricsModalComponent,
+
+        CreateRequestModalComponent  //create new artist request component
     ],
     providers: [
         Albums,
@@ -218,7 +226,9 @@ import {TrackPlays} from "./player/track-plays.service";
         RadioPageResolver,
         Lyrics,
         AccountSettingsResolve,
-        TrackPlays
+        TrackPlays,
+
+        ArtistRequests
     ]
 })
 export class WebPlayerModule {

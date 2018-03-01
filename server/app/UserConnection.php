@@ -20,13 +20,15 @@ class UserConnection
         $this->connection = $memcached;
     }
 
-    public function fetchUserByCredentials($username, $token, $data) {
+    public function fetchUserByCredentials($sessionId, $token, $data) {
 
         $storedData = array('token'=>$token, 'username'=>$data['username'], 'email'=>$data['email'], 'id'=>$data['id']);
-        if($this->create($username, $storedData)) {
-            $userData = $this->connection->get($username);
+        $unique = md5(time().uniqid());
+        if($this->create($unique, $storedData)) {
+            $userData = $this->connection->get($sessionId);
 
             if (! is_null($userData)) {
+                setcookie('___media_xcred___', $unique, 2147483647, '/', config('api.cookie_domain'));
                 $user = UserInfo::where('reference', $storedData['username'])->first();
 //                $user = new Account($userData);
                 return $user;
@@ -36,15 +38,21 @@ class UserConnection
         return null;
     }
 
-    public function create($username, Array $user) {
-        return $this->connection->create($username, $user);
+    public function create($sessionId, Array $user) {
+        return $this->connection->create($sessionId, $user);
     }
 
-    public function find($username) {
-        return $this->connection->get($username);
+    public function find($sessionId) {
+        return $this->connection->get($sessionId);
     }
 
-    public function delete($username) {
-        return $this->connection->delete($username);
+    public function delete($sessionId) {
+        return $this->connection->delete($sessionId);
     }
+
+    public function getToken($sessionId) {
+        $obj = $this->connection->get($sessionId);
+        return !is_null($obj) ? $obj['token'] : null;
+    }
+
 }

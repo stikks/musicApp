@@ -25,8 +25,8 @@ class ModifyPlaylist extends BaseFormRequest
         });
 
         $rules =  [
-            'name' => 'string|min:5|max:255|unique_name',
-            'description' => 'min:20|max:170|nullable',
+            'name' => 'string|max:255|unique_name',
+            'description' => 'max:170|nullable',
             'public' => 'boolean',
         ];
 

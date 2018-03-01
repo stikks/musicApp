@@ -45,11 +45,11 @@ class GroupsTableSeeder extends Seeder
             $users = $this->group->create(['name' => 'users', 'permissions' => json_encode($this->getUserPermissions()), 'default' => 1]);
         }
 
-        if ( ! $this->group->where('name', 'editors')->first()) {
+        if ( ! $this->group->where('name', 'admin')->first()) {
             $this->group->create([
-                'name' => 'editors',
+                'name' => 'admin',
                 'permissions' => json_encode(
-                    array_merge($this->getUserPermissions(), $this->getEditorPermissions())
+                    array_merge($this->getUserPermissions(), $this->getAdminPermissions())
                 )
             ]);
         }
@@ -116,11 +116,48 @@ class GroupsTableSeeder extends Seeder
     }
 
     /**
-     * Get default permissions for editors group.
+     * Get default permissions for artists.
      *
      * @return array
      */
-    private function getEditorPermissions()
+    private function getArtistPermissions()
+    {
+        return [
+            'self.update' => 1,
+            'albums.create' => 1,
+            'albums.update' => 1,
+            'albums.delete' => 1,
+            'tracks.create' => 1,
+            'tracks.update' => 1,
+            'tracks.delete' => 1
+        ];
+    }
+
+    /**
+     * Get default permissions for aggregators.
+     *
+     * @return array
+     */
+    private function getAggregatorPermissions()
+    {
+        return [
+            'artists.create' => 1,
+            'artists.update' => 1,
+            'albums.create' => 1,
+            'albums.update' => 1,
+            'albums.delete' => 1,
+            'tracks.create' => 1,
+            'tracks.update' => 1,
+            'tracks.delete' => 1,
+        ];
+    }
+
+    /**
+     * Get default permissions for admin group.
+     *
+     * @return array
+     */
+    private function getAdminPermissions()
     {
         return [
             'artists.create' => 1,

@@ -122,11 +122,7 @@ class TokenGuard implements StatefulGuard, SupportsBasicAuth
     public function setUser(Authenticatable $user)
     {
         $this->user = $user;
-
         $this->fireAuthenticatedEvent($user);
-
-        setcookie('___media_xcred___', $user->getAuthIdentifier(), 2147483647, '/', config('api.cookie_domain'));
-
         return $this;
     }
 
@@ -141,8 +137,12 @@ class TokenGuard implements StatefulGuard, SupportsBasicAuth
     }
 
     public function getToken() {
-        $user = Auth::user();
-        return $user->token;
+        if (Auth::check()) {
+            $sessionId = $_COOKIE['___media_xcred___'];
+            return $this->provider->getToken($sessionId);
+        }
+
+        return null;
     }
 
 //    public function getSessionParams()
@@ -163,7 +163,6 @@ class TokenGuard implements StatefulGuard, SupportsBasicAuth
     {
         $data = NULL;
         if (isset($_COOKIE['___media_xcred___']))
-//            $data = $this->request->session()->get('___media_xcred___');
             $data = $_COOKIE['___media_xcred___'];
         return (!empty($data) ? $data : NULL);
     }
@@ -207,7 +206,6 @@ class TokenGuard implements StatefulGuard, SupportsBasicAuth
         $this->lastAttempted = $user = $this->provider->retrieveByCredentials($credentials);
 
         if ($this->hasValidCredentials($user, $credentials)) {
-            \Log::info($user);
             $this->login($user, $remember);
 
             return true;

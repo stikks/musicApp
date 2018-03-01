@@ -60,6 +60,8 @@ class CustomProvider implements UserProvider
 
         $resp = $this->apiRequest->getUser($token);
 
+        \Log::info($resp);
+
         if (is_null($resp)) {
             return null;
         }
@@ -77,7 +79,10 @@ class CustomProvider implements UserProvider
     public function retrieveByCredentials(array $credentials)
     {
         try{
-            $resp = $this->apiRequest->postData('auth/login', $credentials);
+            $resp = $this->apiRequest->postData('auth/login', $credentials, array(), [
+                config('api.client_id'),
+                config('api.client_secret'),
+            ]);
 
             if (!$resp['status']) {
                 return null;
@@ -106,7 +111,7 @@ class CustomProvider implements UserProvider
     public function getUser($sessionId) {
 
         if ($resp=$this->model->find($sessionId)) {
-            return UserInfo::where('reference', $sessionId)->first();
+            return UserInfo::where('reference', $resp['username'])->first();
 //            $account = new Account($resp);
 //            $account->username = $account->info->username;
 //            return $account;
@@ -116,5 +121,9 @@ class CustomProvider implements UserProvider
 
     public function deleteSession($sessionID) {
         return $this->model->delete($sessionID);
+    }
+
+    public function getToken($sessionId) {
+        return $this->model->getToken($sessionId);
     }
 }

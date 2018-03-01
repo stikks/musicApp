@@ -176,6 +176,10 @@ Route::group(['prefix' => 'secure'], function () {
     Route::post('mail-templates/render', 'MailTemplatesController@render');
     Route::post('mail-templates/{id}/restore-default', 'MailTemplatesController@restoreDefault');
     Route::put('mail-templates/{id}', 'MailTemplatesController@update');
+
+    //ARTIST REQUESTS
+    Route::get('artist_requests', 'ArtistRequestsController@get');
+    Route::post('artist_requests', 'ArtistRequestsController@create');
 });
 
 //LEGACY

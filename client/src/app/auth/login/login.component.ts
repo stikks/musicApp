@@ -52,6 +52,7 @@ export class LoginComponent {
             this.bootstrapper.bootstrap(response.data);
 
             //TODO: Move this into auth service, so other components can re-use
+            location.reload();
             this.router.navigate([this.auth.getRedirectUri()]).then(navigated => {
                 this.isLoading = false;
 

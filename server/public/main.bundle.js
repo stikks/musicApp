@@ -664,6 +664,10 @@ var AuthService = (function () {
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return CurrentUser; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__shared_types_models_User__ = __webpack_require__("./src/app/shared/types/models/User.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_ng2_cookies_ng2_cookies__ = __webpack_require__("./node_modules/ng2-cookies/ng2-cookies.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_ng2_cookies_ng2_cookies___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_ng2_cookies_ng2_cookies__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_jquery__ = __webpack_require__("./node_modules/jquery/dist/jquery.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_jquery__);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -672,9 +676,13 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 
 
+// import {HttpClient, HttpParams} from "@angular/common/http";
+
+
 var CurrentUser = (function () {
     function CurrentUser() {
     }
+    // constructor(private httpClient: HttpClient){}
     /**
      * Get property of currently logged in user model.
      */
@@ -758,6 +766,26 @@ var CurrentUser = (function () {
     CurrentUser.prototype.init = function (params) {
         this.guestsGroup = params.guestsGroup;
         this.assignCurrent(params.user);
+        var current_id = this.current.id.toString();
+        if (this.isLoggedIn() && !__WEBPACK_IMPORTED_MODULE_2_ng2_cookies_ng2_cookies__["Cookie"].get(this.current.id.toString())) {
+            __WEBPACK_IMPORTED_MODULE_3_jquery__["ajax"]({
+                url: "/secure/artist_requests",
+                type: "GET",
+                success: function (resp, body) {
+                    // if (resp.data === null) {
+                    //     this.artist_request = false;
+                    // }
+                    // else {
+                    //     this.artist_request = true;
+                    // }
+                    var response = resp.data === null;
+                    __WEBPACK_IMPORTED_MODULE_2_ng2_cookies_ng2_cookies__["Cookie"].set(current_id, response.toString());
+                    this.artist_request = resp.data === null;
+                }, error: function (err) {
+                    console.warn(err);
+                }
+            });
+        }
     };
     /**
      * Get flattened array of permissions from all groups user belongs to.
@@ -773,6 +801,17 @@ var CurrentUser = (function () {
         });
         this.cachedPermissions = Object.assign(permissions, this.get('permissions') || {});
         return this.cachedPermissions;
+    };
+    CurrentUser.prototype.hasSubscription = function () {
+        return this;
+    };
+    CurrentUser.prototype.hasRequest = function () {
+        // this.httpClient.get('artist_requests').subscribe(data => {
+        //     console.log(data);
+        // }, err => {
+        //     console.log(err);
+        // });
+        return Boolean(__WEBPACK_IMPORTED_MODULE_2_ng2_cookies_ng2_cookies__["Cookie"].get(this.current.id.toString()));
     };
     CurrentUser = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Injectable"])()
@@ -953,6 +992,7 @@ var LoginComponent = (function () {
         this.auth.login(this.model).subscribe(function (response) {
             _this.bootstrapper.bootstrap(response.data);
             //TODO: Move this into auth service, so other components can re-use
+            location.reload();
             _this.router.navigate([_this.auth.getRedirectUri()]).then(function (navigated) {
                 _this.isLoading = false;
                 if (!navigated) {
@@ -5480,6 +5520,28 @@ var Artist = (function () {
 
 /***/ }),
 
+/***/ "./src/app/shared/types/models/ArtistRequest.ts":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ArtistRequest; });
+/**
+ * Created by tm30user on 27/02/2018.
+ */
+var ArtistRequest = (function () {
+    function ArtistRequest(params) {
+        if (params === void 0) { params = {}; }
+        for (var name_1 in params) {
+            this[name_1] = params[name_1];
+        }
+    }
+    return ArtistRequest;
+}());
+
+
+
+/***/ }),
+
 /***/ "./src/app/shared/types/models/Genre.ts":
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -7336,6 +7398,63 @@ var ArtistItemComponent = (function () {
 
 /***/ }),
 
+/***/ "./src/app/web-player/artists/artist-requests.service.ts":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ArtistRequests; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__shared_app_http_client_service__ = __webpack_require__("./src/app/shared/app-http-client.service.ts");
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+/**
+ * Created by tm30user on 27/02/2018.
+ */
+
+
+var ArtistRequests = (function () {
+    /**
+     * Artists Service Constructor.
+     */
+    function ArtistRequests(httpClient) {
+        this.httpClient = httpClient;
+    }
+    /**
+     * Get artist matching specified id.
+     */
+    ArtistRequests.prototype.get = function (id, params) {
+        if (params === void 0) { params = {}; }
+        return this.httpClient.get('artist_requests/' + id, params);
+    };
+    /**
+     * Create new request.
+     */
+    ArtistRequests.prototype.create = function (payload) {
+        // let response = $.post('/secure/artist_requests', payload, function (resp, body) {
+        //     console.log(resp);
+        //     console.log(body);
+        //     return resp;
+        // });
+        return this.httpClient.post('artist_requests', payload);
+    };
+    ArtistRequests = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Injectable"])(),
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1__shared_app_http_client_service__["a" /* AppHttpClient */]])
+    ], ArtistRequests);
+    return ArtistRequests;
+}());
+
+
+
+/***/ }),
+
 /***/ "./src/app/web-player/artists/artist.service.ts":
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -7974,6 +8093,140 @@ var Artists = (function () {
     ], Artists);
     return Artists;
 }());
+
+
+
+/***/ }),
+
+/***/ "./src/app/web-player/artists/create-artist-modal/create-artist-modal.component.html":
+/***/ (function(module, exports) {
+
+module.exports = "<div class=\"backdrop\"></div>\n\n<form class=\"modal-content\" (ngSubmit)=\"confirm()\" ngNativeValidate>\n    <div class=\"modal-header\">\n        <h2 class=\"modal-title\">\n            <span trans>Request to be an Artist</span>\n        </h2>\n        <button type=\"button\" (click)=\"close()\" class=\"close-button no-style icon-button\">\n            <svg-icon name=\"close\"></svg-icon>\n        </button>\n    </div>\n    \n    <div class=\"content\">\n        <!--<div class=\"img-container\">-->\n            <!--<img [src]=\"model.image\">-->\n            <!--<button class=\"no-style upload-img-button\" type=\"button\" (click)=\"openImageUploadModal()\">-->\n                <!--<svg-icon name=\"add-a-photo\"></svg-icon>-->\n            <!--</button>-->\n        <!--</div>-->\n\n        <div class=\"many-inputs\">\n            <div class=\"input-container name-input\">\n                <label for=\"stage_name\" trans>Stage Name</label>\n                <input type=\"text\" [(ngModel)]=\"model.stage_name\" id=\"stage_name\" name=\"name\" placeholder=\"Enter Stage Name\" required>\n                <div class=\"error\" *ngIf=\"errors.stage_name\">{{errors.stage_name}}</div>\n            </div>\n\n            <div class=\"input-container description-input\">\n                <label for=\"address\" trans>Physical Address</label>\n                <textarea [(ngModel)]=\"model.address\" id=\"address\" name=\"address\" placeholder=\"Enter physical address.\" trans-placeholder required></textarea>\n                <div class=\"error\" *ngIf=\"errors.address\">{{errors.address}}</div>\n            </div>\n\n            <div class=\"input-container name-input\">\n                <label for=\"phone\" trans>Phone</label>\n                <input type=\"text\" [(ngModel)]=\"model.phone\" id=\"phone\" name=\"phone\" placeholder=\"Enter Phone\" required>\n                <div class=\"error\" *ngIf=\"errors.phone\">{{errors.phone}}</div>\n            </div>\n\n            <div class=\"input-container name-input\">\n                <label for=\"phone\" trans>Instagram</label>\n                <input type=\"text\" [(ngModel)]=\"model.instagram_id\" id=\"instagram_id\" name=\"instagram_id\" placeholder=\"Instagram Username\">\n                <div class=\"error\" *ngIf=\"errors.instagram_id\">{{errors.instagram_id}}</div>\n            </div>\n\n            <div class=\"input-container name-input\">\n                <label for=\"phone\" trans>Twitter</label>\n                <input type=\"text\" [(ngModel)]=\"model.twitter_id\" id=\"twitter_id\" name=\"twitter_id\" placeholder=\"Twitter Username\">\n                <div class=\"error\" *ngIf=\"errors.twitter_id\">{{errors.twitter_id}}</div>\n            </div>\n\n            <div class=\"input-container name-input\">\n                <label for=\"phone\" trans>Facebook</label>\n                <input type=\"text\" [(ngModel)]=\"model.facebook_id\" id=\"facebook_id\" name=\"facebook_id\" placeholder=\"Facebook Username\">\n                <div class=\"error\" *ngIf=\"errors.facebook_id\">{{errors.facebook_id}}</div>\n            </div>\n        </div>\n    </div>\n\n    <div class=\"buttons right\">\n        <button (click)=\"close()\" type=\"button\" class=\"button cancel cancel-button\" trans>Close</button>\n        <button type=\"submit\" class=\"button primary submit-button\">\n            <span trans>Create</span>\n        </button>\n    </div>\n\n    <loading-indicator [isVisible]=\"loading\" class=\"overlay opacity-high\"></loading-indicator>\n</form>"
+
+/***/ }),
+
+/***/ "./src/app/web-player/artists/create-artist-modal/create-artist-modal.component.scss":
+/***/ (function(module, exports) {
+
+module.exports = "crupdate-playlist-modal.modal > .modal-content {\n  width: 760px; }\n\ncrupdate-playlist-modal.modal .content {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex; }\n\ncrupdate-playlist-modal.modal .content > .img-container {\n    width: 215px;\n    height: 215px;\n    -webkit-box-flex: 0;\n        -ms-flex: 0 0 215px;\n            flex: 0 0 215px;\n    position: relative;\n    margin-right: 15px; }\n\ncrupdate-playlist-modal.modal .content > .img-container:hover > img {\n      -webkit-filter: brightness(0.8);\n              filter: brightness(0.8); }\n\ncrupdate-playlist-modal.modal .content > .img-container > img {\n      width: 100%;\n      height: 100%;\n      -o-object-fit: cover;\n         object-fit: cover;\n      -webkit-transition: -webkit-filter 0.3s;\n      transition: -webkit-filter 0.3s;\n      transition: filter 0.3s;\n      transition: filter 0.3s, -webkit-filter 0.3s; }\n\ncrupdate-playlist-modal.modal .content > .img-container > .upload-img-button {\n      display: block;\n      position: absolute;\n      width: 50px;\n      height: 50px;\n      top: 50%;\n      left: 50%;\n      margin: -25px 0 0 -25px;\n      -webkit-transition: -webkit-transform 0.3s cubic-bezier(0, 0, 0, 2.41);\n      transition: -webkit-transform 0.3s cubic-bezier(0, 0, 0, 2.41);\n      transition: transform 0.3s cubic-bezier(0, 0, 0, 2.41);\n      transition: transform 0.3s cubic-bezier(0, 0, 0, 2.41), -webkit-transform 0.3s cubic-bezier(0, 0, 0, 2.41);\n      border-radius: 50%; }\n\ncrupdate-playlist-modal.modal .content > .img-container > .upload-img-button:hover {\n        -webkit-transform: scale(1.2);\n                transform: scale(1.2); }\n\ncrupdate-playlist-modal.modal .content > .img-container > .upload-img-button > svg-icon {\n        display: block;\n        width: 100%;\n        height: 100%; }\n\ncrupdate-playlist-modal.modal .content > .many-inputs {\n    -webkit-box-flex: 1;\n        -ms-flex: 1 1 auto;\n            flex: 1 1 auto; }\n\ncrupdate-playlist-modal.modal .content > .many-inputs > .description-input {\n      margin-bottom: 5px; }\n\ncrupdate-playlist-modal.modal .content > .many-inputs > .description-input > textarea {\n        height: 75px; }\n\n@media only screen and (max-width: 768px) {\n  crupdate-playlist-modal.modal .content {\n    display: block; }\n    crupdate-playlist-modal.modal .content > .img-container {\n      margin-bottom: 15px; }\n  crupdate-playlist-modal.modal > .modal-content {\n    width: 95%; } }\n"
+
+/***/ }),
+
+/***/ "./src/app/web-player/artists/create-artist-modal/create-artist-modal.component.ts":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return CreateRequestModalComponent; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__shared_modal_base_modal__ = __webpack_require__("./src/app/shared/modal/base-modal.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__shared_types_models_ArtistRequest__ = __webpack_require__("./src/app/shared/types/models/ArtistRequest.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__artist_requests_service__ = __webpack_require__("./src/app/web-player/artists/artist-requests.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__shared_settings_service__ = __webpack_require__("./src/app/shared/settings.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__shared_modal_modal_service__ = __webpack_require__("./src/app/shared/modal/modal.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__shared_upload_file_modal_upload_file_modal_component__ = __webpack_require__("./src/app/shared/upload-file-modal/upload-file-modal.component.ts");
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+
+
+
+
+var CreateRequestModalComponent = (function (_super) {
+    __extends(CreateRequestModalComponent, _super);
+    /**
+     * NewArtistModal Component.
+     */
+    function CreateRequestModalComponent(el, renderer, requests, settings, modal) {
+        var _this = _super.call(this, el, renderer) || this;
+        _this.el = el;
+        _this.renderer = renderer;
+        _this.requests = requests;
+        _this.settings = settings;
+        _this.modal = modal;
+        /**
+         * New artist request.
+         */
+        _this.model = new __WEBPACK_IMPORTED_MODULE_2__shared_types_models_ArtistRequest__["a" /* ArtistRequest */]({});
+        return _this;
+    }
+    /**
+     * Show the modal.
+     */
+    CreateRequestModalComponent.prototype.show = function (params) {
+        if (params.artist_request)
+            this.model = Object.assign({}, params.artist_request);
+        // this.setDefaultImageUrl();
+        _super.prototype.show.call(this, params);
+    };
+    /**
+     * Close modal and emit created artist.
+     */
+    CreateRequestModalComponent.prototype.confirm = function () {
+        var _this = this;
+        this.loading = true;
+        this.createArtistRequest().finally(function () {
+            _this.loading = false;
+        }).subscribe(function (artist_request) {
+            _super.prototype.done.call(_this, artist_request);
+        }, this.handleErrors.bind(this));
+    };
+    /**
+     * Create new artist or update existing one.
+     */
+    CreateRequestModalComponent.prototype.createArtistRequest = function () {
+        var payload = {
+            address: this.model.address,
+            phone: this.model.phone,
+            twitter_id: this.model.twitter_id,
+            facebook_id: this.model.facebook_id,
+            stage_name: this.model.stage_name,
+            instagram_id: this.model.instagram_id
+        };
+        return this.requests.create(payload);
+    };
+    /**
+     * Open modal for uploading artist image.
+     */
+    CreateRequestModalComponent.prototype.openImageUploadModal = function () {
+        var params = { uri: 'images/static/upload', httpParams: { type: 'artist' } };
+        this.modal.show(__WEBPACK_IMPORTED_MODULE_6__shared_upload_file_modal_upload_file_modal_component__["a" /* UploadFileModalComponent */], params).onDone.subscribe(function (url) {
+            // this.model.image = url;
+        });
+    };
+    CreateRequestModalComponent = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
+            selector: 'create-artist-modal',
+            template: __webpack_require__("./src/app/web-player/artists/create-artist-modal/create-artist-modal.component.html"),
+            styles: [__webpack_require__("./src/app/web-player/artists/create-artist-modal/create-artist-modal.component.scss")],
+            encapsulation: __WEBPACK_IMPORTED_MODULE_0__angular_core__["ViewEncapsulation"].None
+        }),
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_0__angular_core__["ElementRef"],
+            __WEBPACK_IMPORTED_MODULE_0__angular_core__["Renderer2"],
+            __WEBPACK_IMPORTED_MODULE_3__artist_requests_service__["a" /* ArtistRequests */],
+            __WEBPACK_IMPORTED_MODULE_4__shared_settings_service__["a" /* Settings */],
+            __WEBPACK_IMPORTED_MODULE_5__shared_modal_modal_service__["a" /* ModalService */]])
+    ], CreateRequestModalComponent);
+    return CreateRequestModalComponent;
+}(__WEBPACK_IMPORTED_MODULE_1__shared_modal_base_modal__["a" /* BaseModalClass */]));
 
 
 
@@ -10203,7 +10456,7 @@ var MediaItem = (function () {
 /***/ "./src/app/web-player/nav-sidebar/nav-sidebar.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"content scroll-container\" customScrollbar>\n    <a class=\"logo-container\" routerLink=\"/\">\n        <img [src]=\"settings.get('branding.site_logo')\">\n    </a>\n\n    <form class=\"search-bar-container\" (ngSubmit)=\"searchPanel.goToSearchPage()\">\n        <label for=\"search\" class=\"hidden\" trans>Main site search</label>\n        <input id=\"search\" placeholder=\"Search...\" [formControl]=\"searchPanel.searchQuery\" trans-placeholder>\n\n        <svg-icon name=\"search\" [class.hidden]=\"searchPanel.searching || searchPanel.searchQuery.value\" (click)=\"searchPanel.goToSearchPage()\"></svg-icon>\n\n        <button type=\"button\" class=\"no-style\" (click)=\"searchPanel.close()\">\n            <svg-icon name=\"close\" [class.hidden]=\"searchPanel.searching || ! searchPanel.searchQuery.value\"></svg-icon>\n        </button>\n\n        <loading-indicator [isVisible]=\"searchPanel.searching\"></loading-indicator>\n    </form>\n\n    <custom-menu position=\"sidebar-primary\" class=\"sidebar-nav\"></custom-menu>\n\n    <div class=\"separator\"></div>\n\n    <div class=\"auth-container\">\n        <div *ngIf=\"currentUser.isLoggedIn()\" class=\"current-user\">\n            <a [routerLink]=\"urls.user(currentUser.getModel())\" class=\"img-container\">\n                <img [src]=\"currentUser.get('avatar')\">\n            </a>\n            <a class=\"name hover-underline\" [routerLink]=\"urls.user(currentUser.getModel())\">{{currentUser.get('display_name')}}</a>\n            <dropdown>\n                <button class=\"no-style dropdown-trigger\" #trigger><svg-icon name=\"settings\"></svg-icon></button>\n\n                <div class=\"dropdown-menu indent\" #menu>\n                    <a class=\"dropdown-item\" #menuItem routerLink=\"/admin\" *ngIf=\"currentUser.hasPermission('access.admin')\">\n                        <svg-icon name=\"dashboard\"></svg-icon>\n                        <span trans>Admin Area</span>\n                    </a>\n                    <a class=\"dropdown-item\" #menuItem routerLink=\"/account-settings\">\n                        <svg-icon name=\"account-circle\"></svg-icon>\n                        <span trans>Account Settings</span>\n                    </a>\n                    <a class=\"dropdown-item\" #menuItem routerLink=\"/admin/artists/new\" *ngIf=\"currentUser.hasPermission('artists.create')\">\n                        <svg-icon name=\"mic\"></svg-icon>\n                        <span trans>New Artist</span>\n                    </a>\n                    <a class=\"dropdown-item\" #menuItem routerLink=\"/admin/albums\" [queryParams]=\"{newAlbum: true}\"  *ngIf=\"currentUser.hasPermission('albums.create')\">\n                        <svg-icon name=\"album\"></svg-icon>\n                        <span trans>New Album</span>\n                    </a>\n                    <a class=\"dropdown-item\" #menuItem routerLink=\"/admin/tracks\" [queryParams]=\"{newTrack: true}\" *ngIf=\"currentUser.hasPermission('tracks.create')\">\n                        <svg-icon name=\"audiotrack\"></svg-icon>\n                        <span trans>New Track</span>\n                    </a>\n                    <div class=\"dropdown-item\" #menuItem (click)=\"auth.logOut()\">\n                        <svg-icon class=\"logout-icon\" name=\"exit-to-app\"></svg-icon>\n                        <span trans>Logout</span>\n                    </div>\n                </div>\n            </dropdown>\n        </div>\n\n        <ng-container *ngIf=\"!currentUser.isLoggedIn()\">\n            <a routerLink=\"/login\" class=\"button primary\" trans>Login</a>\n            <a routerLink=\"/register\" class=\"button\" trans>Register</a>\n        </ng-container>\n    </div>\n\n    <div class=\"your-music-container\">\n        <div class=\"title\" trans>Your Music</div>\n        <custom-menu position=\"sidebar-secondary\" class=\"sidebar-nav\"></custom-menu>\n    </div>\n\n    <div class=\"separator\"></div>\n\n    <div class=\"playlists-container\">\n        <div class=\"header\">\n            <div class=\"name\" trans>Playlists</div>\n            <button class=\"no-style new-playlist-button\" (click)=\"openNewPlaylistModal()\">\n                <svg-icon name=\"playlist-add\"></svg-icon>\n            </button>\n        </div>\n        <div class=\"playlists sidebar-nav\">\n            <div class=\"sidebar-nav-item playlist\" *ngFor=\"let playlist of playlists.get()\" [contextMenu]=\"{item: playlist, type: 'playlist'}\">\n                <a [routerLink]=\"urls.playlist(playlist)\">{{playlist.name}}</a>\n            </div>\n        </div>\n    </div>\n</div>\n\n<div class=\"current-track\" *ngIf=\"player.cued()\" [contextMenu]=\"{item: player.getCuedTrack(), type: 'track'}\">\n    <img [src]=\"getTrackImage(player.getCuedTrack())\">\n    <div class=\"meta\">\n        <a class=\"track-name hover-underline\" [routerLink]=\"urls.track(player.getCuedTrack())\">{{player.getCuedTrack().name}}</a>\n        <artists-links-list class=\"artist-name\" [artists]=\"player.getCuedTrack().artists\"></artists-links-list>\n    </div>\n    <div class=\"toggle-track\">\n        <library-track-toggle-button [track]=\"player.getCuedTrack()\"></library-track-toggle-button>\n    </div>\n</div>"
+module.exports = "<div class=\"content scroll-container\" customScrollbar>\n    <a class=\"logo-container\" routerLink=\"/\">\n        <img [src]=\"settings.get('branding.site_logo')\">\n    </a>\n\n    <form class=\"search-bar-container\" (ngSubmit)=\"searchPanel.goToSearchPage()\">\n        <label for=\"search\" class=\"hidden\" trans>Main site search</label>\n        <input id=\"search\" placeholder=\"Search...\" [formControl]=\"searchPanel.searchQuery\" trans-placeholder>\n\n        <svg-icon name=\"search\" [class.hidden]=\"searchPanel.searching || searchPanel.searchQuery.value\" (click)=\"searchPanel.goToSearchPage()\"></svg-icon>\n\n        <button type=\"button\" class=\"no-style\" (click)=\"searchPanel.close()\">\n            <svg-icon name=\"close\" [class.hidden]=\"searchPanel.searching || ! searchPanel.searchQuery.value\"></svg-icon>\n        </button>\n\n        <loading-indicator [isVisible]=\"searchPanel.searching\"></loading-indicator>\n    </form>\n\n    <custom-menu position=\"sidebar-primary\" class=\"sidebar-nav\"></custom-menu>\n\n    <div class=\"separator\"></div>\n\n    <div class=\"auth-container\">\n        <div *ngIf=\"currentUser.isLoggedIn()\" class=\"current-user\">\n            <a [routerLink]=\"urls.user(currentUser.getModel())\" class=\"img-container\">\n                <img [src]=\"currentUser.get('avatar')\">\n            </a>\n            <a class=\"name hover-underline\" [routerLink]=\"urls.user(currentUser.getModel())\">{{currentUser.get('display_name')}}</a>\n            <dropdown>\n                <button class=\"no-style dropdown-trigger\" #trigger><svg-icon name=\"settings\"></svg-icon></button>\n\n                <div class=\"dropdown-menu indent\" #menu>\n                    <a class=\"dropdown-item\" #menuItem routerLink=\"/admin\" *ngIf=\"currentUser.hasPermission('access.admin')\">\n                        <svg-icon name=\"dashboard\"></svg-icon>\n                        <span trans>Admin Area</span>\n                    </a>\n                    <a class=\"dropdown-item\" #menuItem routerLink=\"/account-settings\">\n                        <svg-icon name=\"account-circle\"></svg-icon>\n                        <span trans>Account Settings</span>\n                    </a>\n                    <a class=\"dropdown-item\" #menuItem routerLink=\"/admin/artists/new\" *ngIf=\"currentUser.hasPermission('artists.create')\">\n                        <svg-icon name=\"mic\"></svg-icon>\n                        <span trans>New Artist</span>\n                    </a>\n                    <a class=\"dropdown-item\" #menuItem routerLink=\"/admin/albums\" [queryParams]=\"{newAlbum: true}\"  *ngIf=\"currentUser.hasPermission('albums.create')\">\n                        <svg-icon name=\"album\"></svg-icon>\n                        <span trans>New Album</span>\n                    </a>\n                    <a class=\"dropdown-item\" #menuItem routerLink=\"/admin/tracks\" [queryParams]=\"{newTrack: true}\" *ngIf=\"currentUser.hasPermission('tracks.create')\">\n                        <svg-icon name=\"audiotrack\"></svg-icon>\n                        <span trans>New Track</span>\n                    </a>\n                    <div class=\"dropdown-item\" #menuItem (click)=\"auth.logOut()\">\n                        <svg-icon class=\"logout-icon\" name=\"exit-to-app\"></svg-icon>\n                        <span trans>Logout</span>\n                    </div>\n                </div>\n            </dropdown>\n        </div>\n\n        <ng-container *ngIf=\"!currentUser.isLoggedIn()\">\n            <a routerLink=\"/login\" class=\"button primary\" trans>Login</a>\n            <a routerLink=\"/register\" class=\"button\" trans>Register</a>\n        </ng-container>\n    </div>\n\n    <div class=\"your-music-container\" *ngIf=\"currentUser.isLoggedIn()\">\n        <div class=\"title\" trans>Your Music</div>\n        <custom-menu position=\"sidebar-secondary\" class=\"sidebar-nav\"></custom-menu>\n    </div>\n\n    <div class=\"separator\"></div>\n\n    <div class=\"playlists-container\">\n        <div class=\"header\" *ngIf=\"currentUser.isLoggedIn() && !currentUser.hasRequest()\">\n            <button (click)=\"openArtistRequestModal()\">\n                Become an Artist\n            </button>\n        </div>\n    </div>\n\n    <div class=\"playlists-container\">\n        <div class=\"header\">\n            <div class=\"name\" trans>Playlists</div>\n            <button *ngIf=\"currentUser.isLoggedIn()\" class=\"no-style new-playlist-button\" (click)=\"openNewPlaylistModal()\">\n                <svg-icon name=\"playlist-add\"></svg-icon>\n            </button>\n        </div>\n        <div class=\"playlists sidebar-nav\">\n            <div class=\"sidebar-nav-item playlist\" *ngFor=\"let playlist of playlists.get()\" [contextMenu]=\"{item: playlist, type: 'playlist'}\">\n                <a [routerLink]=\"urls.playlist(playlist)\">{{playlist.name}}</a>\n            </div>\n        </div>\n    </div>\n</div>\n\n<div class=\"current-track\" *ngIf=\"player.cued()\" [contextMenu]=\"{item: player.getCuedTrack(), type: 'track'}\">\n    <img [src]=\"getTrackImage(player.getCuedTrack())\">\n    <div class=\"meta\">\n        <a class=\"track-name hover-underline\" [routerLink]=\"urls.track(player.getCuedTrack())\">{{player.getCuedTrack().name}}</a>\n        <artists-links-list class=\"artist-name\" [artists]=\"player.getCuedTrack().artists\"></artists-links-list>\n    </div>\n    <div class=\"toggle-track\">\n        <library-track-toggle-button [track]=\"player.getCuedTrack()\"></library-track-toggle-button>\n    </div>\n</div>"
 
 /***/ }),
 
@@ -10230,6 +10483,9 @@ module.exports = "nav-sidebar {\n  display: block;\n  width: 220px;\n  max-width
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__shared_modal_modal_service__ = __webpack_require__("./src/app/shared/modal/modal.service.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__playlists_crupdate_playlist_modal_crupdate_playlist_modal_component__ = __webpack_require__("./src/app/web-player/playlists/crupdate-playlist-modal/crupdate-playlist-modal.component.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__angular_router__ = __webpack_require__("./node_modules/@angular/router/esm5/router.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__shared_toast_toast_service__ = __webpack_require__("./src/app/shared/toast/toast.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__artists_create_artist_modal_create_artist_modal_component__ = __webpack_require__("./src/app/web-player/artists/create-artist-modal/create-artist-modal.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__artists_artist_requests_service__ = __webpack_require__("./src/app/web-player/artists/artist-requests.service.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -10250,11 +10506,14 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+
+
+
 var NavSidebarComponent = (function () {
     /**
      * NavSidebarComponent Constructor.
      */
-    function NavSidebarComponent(settings, searchPanel, currentUser, player, urls, auth, playlists, modal, router) {
+    function NavSidebarComponent(settings, searchPanel, currentUser, player, urls, auth, playlists, modal, router, toast, requests) {
         this.settings = settings;
         this.searchPanel = searchPanel;
         this.currentUser = currentUser;
@@ -10264,6 +10523,8 @@ var NavSidebarComponent = (function () {
         this.playlists = playlists;
         this.modal = modal;
         this.router = router;
+        this.toast = toast;
+        this.requests = requests;
     }
     NavSidebarComponent.prototype.openNewPlaylistModal = function () {
         var _this = this;
@@ -10273,6 +10534,17 @@ var NavSidebarComponent = (function () {
         this.modal.show(__WEBPACK_IMPORTED_MODULE_9__playlists_crupdate_playlist_modal_crupdate_playlist_modal_component__["a" /* CrupdatePlaylistModalComponent */]).onDone.subscribe(function (playlist) {
             _this.playlists.add(playlist);
             _this.router.navigate(_this.urls.playlist(playlist));
+        });
+    };
+    NavSidebarComponent.prototype.openArtistRequestModal = function () {
+        var _this = this;
+        if (!this.currentUser.isLoggedIn()) {
+            this.router.navigate(['/login']);
+        }
+        this.modal.show(__WEBPACK_IMPORTED_MODULE_12__artists_create_artist_modal_create_artist_modal_component__["a" /* CreateRequestModalComponent */]).onDone.subscribe(function (artist_request) {
+            _this.toast.show(artist_request.data);
+            _this.currentUser.artist_request = true;
+            _this.router.navigate(['/']);
         });
     };
     /**
@@ -10298,7 +10570,9 @@ var NavSidebarComponent = (function () {
             __WEBPACK_IMPORTED_MODULE_6__auth_auth_service__["a" /* AuthService */],
             __WEBPACK_IMPORTED_MODULE_7__playlists_user_playlists_service__["a" /* UserPlaylists */],
             __WEBPACK_IMPORTED_MODULE_8__shared_modal_modal_service__["a" /* ModalService */],
-            __WEBPACK_IMPORTED_MODULE_10__angular_router__["e" /* Router */]])
+            __WEBPACK_IMPORTED_MODULE_10__angular_router__["e" /* Router */],
+            __WEBPACK_IMPORTED_MODULE_11__shared_toast_toast_service__["a" /* ToastService */],
+            __WEBPACK_IMPORTED_MODULE_13__artists_artist_requests_service__["a" /* ArtistRequests */]])
     ], NavSidebarComponent);
     return NavSidebarComponent;
 }());
@@ -18626,6 +18900,8 @@ var WebPlayerComponent = (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_99__player_strategies_soundcloud_strategy_service__ = __webpack_require__("./src/app/web-player/player/strategies/soundcloud-strategy.service.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_100__ad_host_ad_host_component__ = __webpack_require__("./src/app/web-player/ad-host/ad-host.component.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_101__player_track_plays_service__ = __webpack_require__("./src/app/web-player/player/track-plays.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_102__artists_artist_requests_service__ = __webpack_require__("./src/app/web-player/artists/artist-requests.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_103__artists_create_artist_modal_create_artist_modal_component__ = __webpack_require__("./src/app/web-player/artists/create-artist-modal/create-artist-modal.component.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -18734,6 +19010,9 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 
 
 
+// artist requests
+
+
 var WebPlayerModule = (function () {
     function WebPlayerModule() {
     }
@@ -18798,7 +19077,8 @@ var WebPlayerModule = (function () {
                 __WEBPACK_IMPORTED_MODULE_94__player_mobile_player_controls_mobile_player_controls_component__["a" /* MobilePlayerControlsComponent */],
                 __WEBPACK_IMPORTED_MODULE_95__users_user_library_user_library_component__["a" /* UserLibraryComponent */],
                 __WEBPACK_IMPORTED_MODULE_96__users_user_library_library_playlists_library_playlists_component__["a" /* LibraryPlaylistsComponent */],
-                __WEBPACK_IMPORTED_MODULE_100__ad_host_ad_host_component__["a" /* AdHostComponent */]
+                __WEBPACK_IMPORTED_MODULE_100__ad_host_ad_host_component__["a" /* AdHostComponent */],
+                __WEBPACK_IMPORTED_MODULE_103__artists_create_artist_modal_create_artist_modal_component__["a" /* CreateRequestModalComponent */] //create new artist request component
             ],
             entryComponents: [
                 __WEBPACK_IMPORTED_MODULE_55__albums_album_context_menu_album_context_menu_component__["a" /* AlbumContextMenuComponent */],
@@ -18809,6 +19089,7 @@ var WebPlayerModule = (function () {
                 __WEBPACK_IMPORTED_MODULE_56__playlists_crupdate_playlist_modal_crupdate_playlist_modal_component__["a" /* CrupdatePlaylistModalComponent */],
                 __WEBPACK_IMPORTED_MODULE_88__context_menu_share_media_item_modal_share_media_item_modal_component__["a" /* ShareMediaItemModalComponent */],
                 __WEBPACK_IMPORTED_MODULE_89__lyrics_lyrics_modal_lyrics_modal_component__["a" /* LyricsModalComponent */],
+                __WEBPACK_IMPORTED_MODULE_103__artists_create_artist_modal_create_artist_modal_component__["a" /* CreateRequestModalComponent */] //create new artist request component
             ],
             providers: [
                 __WEBPACK_IMPORTED_MODULE_9__albums_albums_service__["a" /* Albums */],
@@ -18855,7 +19136,8 @@ var WebPlayerModule = (function () {
                 __WEBPACK_IMPORTED_MODULE_87__radio_page_radio_page_resolver_service__["a" /* RadioPageResolver */],
                 __WEBPACK_IMPORTED_MODULE_90__lyrics_lyrics_service__["a" /* Lyrics */],
                 __WEBPACK_IMPORTED_MODULE_93__users_account_settings_account_settings_resolve_service__["a" /* AccountSettingsResolve */],
-                __WEBPACK_IMPORTED_MODULE_101__player_track_plays_service__["a" /* TrackPlays */]
+                __WEBPACK_IMPORTED_MODULE_101__player_track_plays_service__["a" /* TrackPlays */],
+                __WEBPACK_IMPORTED_MODULE_102__artists_artist_requests_service__["a" /* ArtistRequests */]
             ]
         })
     ], WebPlayerModule);

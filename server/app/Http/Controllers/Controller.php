@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\BaseFormRequest;
 use Auth;
-use App\User;
+use App\UserInfo as User;
 use App\Account;
 use App\Group;
 use Illuminate\Validation\Validator;
@@ -35,7 +35,8 @@ class Controller extends BaseController
             list($ability, $arguments) = $this->parseAbilityAndArguments($ability, $arguments);
             return app(Gate::class)->authorize($ability, $arguments);
         } else {
-            $guest = new Account(array());
+            $guest = new User();
+            $guest->permissions = config('permissions.guest');
 //            $guest->setRelation('groups', Group::where('guests', 1)->get());
             return $this->authorizeForUser($guest, $ability, $arguments);
         }

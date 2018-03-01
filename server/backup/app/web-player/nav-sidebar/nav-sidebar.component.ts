@@ -11,6 +11,12 @@ import {CrupdatePlaylistModalComponent} from "../playlists/crupdate-playlist-mod
 import {Router} from "@angular/router";
 import {Track} from "../../shared/types/models/Track";
 
+/*
+ *   artist request
+  */
+import {CreateRequestModalComponent} from "../artists/create-artist-modal/create-artist-modal.component";
+import {ArtistRequests} from "../artists/artist-requests.service";
+
 @Component({
     selector: 'nav-sidebar',
     templateUrl: './nav-sidebar.component.html',
@@ -31,7 +37,9 @@ export class NavSidebarComponent {
         public auth: AuthService,
         public playlists: UserPlaylists,
         private modal: ModalService,
-        private router: Router
+        private router: Router,
+
+        public requests: ArtistRequests
     ) {}
 
     public openNewPlaylistModal() {
@@ -42,6 +50,18 @@ export class NavSidebarComponent {
         this.modal.show(CrupdatePlaylistModalComponent).onDone.subscribe(playlist => {
             this.playlists.add(playlist);
             this.router.navigate(this.urls.playlist(playlist));
+        });
+    }
+
+    public openArtistRequestModal() {
+        if ( ! this.currentUser.isLoggedIn()) {
+            this.router.navigate(['/login']);
+        }
+
+        this.modal.show(CreateRequestModalComponent).onDone.subscribe(request => {
+            console.log(request);
+            // this.requests.add(playlist);
+            // this.router.navigate(this.urls.playlist(playlist));
         });
     }
 

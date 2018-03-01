@@ -142,3 +142,10 @@ def full_deploy():
         migrate(is_local=False)
         clear(True)
         restart_service(['httpd'])
+
+
+def run(port=8010):
+    """
+        run server
+    """
+    local('php artisan serve --port {}'.format(port))

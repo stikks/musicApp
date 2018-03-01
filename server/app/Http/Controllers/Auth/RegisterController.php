@@ -100,18 +100,7 @@ class RegisterController extends Controller
 
         if ($response['status'] == true) {
             $data['reference'] = $data['username'];
-            $data['permissions'] = [
-                'artists.view' => 1,
-                'albums.view' => 1,
-                'tracks.view' => 1,
-                'genres.view' => 1,
-                'lyrics.view' => 1,
-                'users.view'  => 1,
-                'playlists.create' => 1,
-                'localizations.show' => 1,
-                'pages.view' => 1,
-                'uploads.create' => 1,
-            ];
+            $data['permissions'] = config('permissions.user');
             $this->create($data);
             return $this->success();
 //            return $this->registered($request, \Auth::user()->info);

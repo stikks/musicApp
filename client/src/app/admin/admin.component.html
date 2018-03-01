@@ -59,6 +59,10 @@
                 <svg-icon name="mic"></svg-icon>
                 <span trans>Artists</span>
             </a>
+            <a class="menu-item" routerLink="artists" *ngIf="currentUser.hasPermission('artists.create')" routerLinkActive="router-link-active">
+                <svg-icon name="mic"></svg-icon>
+                <span trans>Aggregators</span>
+            </a>
             <a class="menu-item" routerLink="albums" *ngIf="currentUser.hasPermission('albums.update')" routerLinkActive="router-link-active">
                 <svg-icon name="album"></svg-icon>
                 <span trans>Albums</span>
@@ -79,10 +83,10 @@
                 <svg-icon name="person"></svg-icon>
                 <span trans>Users</span>
             </a>
-            <a class="menu-item" routerLink="groups" *ngIf="currentUser.hasPermission('groups.view')" routerLinkActive="router-link-active">
-                <svg-icon name="people"></svg-icon>
-                <span trans>Groups</span>
-            </a>
+            <!--<a class="menu-item" routerLink="groups" *ngIf="currentUser.hasPermission('groups.view')" routerLinkActive="router-link-active">-->
+                <!--<svg-icon name="people"></svg-icon>-->
+                <!--<span trans>Groups</span>-->
+            <!--</a>-->
             <a class="menu-item" routerLink="pages" *ngIf="currentUser.hasPermission('pages.view')" routerLinkActive="router-link-active">
                 <svg-icon name="insert-drive-file"></svg-icon>
                 <span trans>Pages</span>

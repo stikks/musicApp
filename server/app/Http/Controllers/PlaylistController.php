@@ -93,9 +93,9 @@ class PlaylistController extends Controller
      */
     public function show($id)
     {
-        $playlist = $this->playlist->withCount('tracks')->findOrFail($id);
+        $playlist = $this->playlist->with('editors')->withCount('tracks')->findOrFail($id);
 
-        $playlist->editors = [$this->request->user()->info];
+//        $playlist->editors = [$this->request->user()];
 
         $this->authorize('show', $playlist);
 
@@ -103,11 +103,13 @@ class PlaylistController extends Controller
 
         dispatch(new IncrementModelViews($playlist->id, 'playlist'));
 
-        return [
+        $data = [
             'playlist' => $playlist->toArray(),
             'tracks' => $this->tracksPaginator->paginate($playlist->id),
             'totalDuration' => (int)$totalDuration
         ];
+
+        return $data;
     }
 
     /**
@@ -119,14 +121,6 @@ class PlaylistController extends Controller
     public function store(ModifyPlaylist $validate)
     {
         $this->authorize('store', Playlist::class);
-
-//        $playlist = $this->playlist->create($this->request->all());
-//        if ($playlist) {
-//            $resp = DBConnector::createRaw('playlist_user', ['user_id'=>$this->request->user()->info->id,
-//                'playlist_id'=>$playlist->id,
-//                'owner' => true
-//            ]);
-//        }
 
         $playlist = $this->request->user()->playlists()->create($this->request->all(), ['owner' => 1]);
 

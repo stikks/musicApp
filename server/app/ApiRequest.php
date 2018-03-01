@@ -67,27 +67,43 @@ class ApiRequest
         }
     }
 
-    public function get($id) {
-
+    public function authGet($endpoint) {
+        try {
+            $resp = $this->client->request('GET', $endpoint, [
+                    'debug' => false,
+                    'headers' => [
+                        'Authorization' => 'Bearer '.Auth::getToken(),
+                    ]
+                ]
+            );
+            return $this->successResponse(json_decode($resp->getBody()->getContents()));
+        } catch (ClientException $e) {
+            return $this->errorResponse(json_decode($e->getResponse()->getBody()->getContents()));
+        }
     }
 
     public function filterBy($id) {
 
     }
 
-    public function postData($endpoint, $data=array(), $headers=array()) {
+    public function postData($endpoint, $data=array(), $headers=array(), $auth=array()) {
 
         try {
             $head = array_merge([
                 'Content-Type' => 'application/x-www-form-urlencoded',
             ], $headers);
 
-            $resp = $this->client->request('POST', $endpoint, [
-                    'debug' => false,
-                    'form_params' => $data,
-                    'headers' => $head,
-                ]
-            );
+            $query = [
+                'debug' => false,
+                'form_params' => $data,
+                'headers' => $head,
+            ];
+
+            if (count($auth)) {
+                $query['auth'] = $auth;
+            }
+
+            $resp = $this->client->request('POST', $endpoint, $query);
             return $this->successResponse(json_decode($resp->getBody()->getContents()));
         } catch (ClientException $e) {
             return $this->errorResponse(json_decode($e->getResponse()->getBody()->getContents()));
@@ -104,7 +120,7 @@ class ApiRequest
 
     public function getUser($token) {
         try {
-            $resp = $this->client->request('GET', 'auth/me', [
+            $resp = $this->client->request('GET', 'me', [
                     'debug' => false,
                     'headers' => [
                         'Authorization' => 'Bearer '.$token ,

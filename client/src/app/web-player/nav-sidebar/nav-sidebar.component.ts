@@ -10,6 +10,11 @@ import {ModalService} from "../../shared/modal/modal.service";
 import {CrupdatePlaylistModalComponent} from "../playlists/crupdate-playlist-modal/crupdate-playlist-modal.component";
 import {Router} from "@angular/router";
 import {Track} from "../../shared/types/models/Track";
+import {ToastService} from "../../shared/toast/toast.service";
+
+
+import {CreateRequestModalComponent} from "../artists/create-artist-modal/create-artist-modal.component";
+import {ArtistRequests} from "../artists/artist-requests.service"
 
 @Component({
     selector: 'nav-sidebar',
@@ -31,7 +36,10 @@ export class NavSidebarComponent {
         public auth: AuthService,
         public playlists: UserPlaylists,
         private modal: ModalService,
-        private router: Router
+        private router: Router,
+        private toast: ToastService,
+
+        public requests: ArtistRequests
     ) {}
 
     public openNewPlaylistModal() {
@@ -42,6 +50,18 @@ export class NavSidebarComponent {
         this.modal.show(CrupdatePlaylistModalComponent).onDone.subscribe(playlist => {
             this.playlists.add(playlist);
             this.router.navigate(this.urls.playlist(playlist));
+        });
+    }
+
+    public openArtistRequestModal() {
+        if ( ! this.currentUser.isLoggedIn()) {
+            this.router.navigate(['/login']);
+        }
+
+        this.modal.show(CreateRequestModalComponent).onDone.subscribe(artist_request => {
+            this.toast.show(artist_request.data);
+            this.currentUser.artist_request = true;
+            this.router.navigate(['/']);
         });
     }
 
