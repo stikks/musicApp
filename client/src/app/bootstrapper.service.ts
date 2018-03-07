@@ -87,7 +87,8 @@ export class Bootstrapper {
         //set current user and default group for guests
         this.currentUser.init({
             guestsGroup: data['guests_group'],
-            user: data['user']
+            user: data['user'],
+            artist: data['artist']
         });
 
         //set user library

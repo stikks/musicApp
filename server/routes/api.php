@@ -10,3 +10,8 @@
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+//use Mookofe\Tail\Facades\Tail;
+//
+//Tail::listen('name', function ($messages) {
+//   print_r($messages);
+//});

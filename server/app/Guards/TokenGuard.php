@@ -168,6 +168,11 @@ class TokenGuard implements StatefulGuard, SupportsBasicAuth
     }
 
     public function logout() {
+
+        if (isset($_COOKIE['__xhRequest__'])) {
+            setcookie('__xhRequest__', "", time() - 3600, '/');
+        }
+
         if (isset($_COOKIE['___media_xcred___'])) {
             $data = $_COOKIE['___media_xcred___'];
             $this->provider->deleteSession($data);

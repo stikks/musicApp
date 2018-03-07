@@ -85,10 +85,6 @@ class Account implements Authenticatable
         return $this->rememberTokenName;
     }
 
-    public function hasPermission($permission) {
-        return true;
-    }
-
     /**
      * Social profiles this users account is connected to.
      *

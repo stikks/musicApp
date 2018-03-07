@@ -40,6 +40,11 @@ class RestrictDemoSiteFunctionality
         ['method' => 'PUT', 'name' => 'artists/{id}'],
         ['method' => 'POST', 'name' => 'artists'],
 
+        //aggregators
+        ['method' => 'DELETE', 'name' => 'aggregators'],
+        ['method' => 'PUT', 'name' => 'aggregators/{id}'],
+        ['method' => 'POST', 'name' => 'aggregators'],
+
         //albums
         ['method' => 'DELETE', 'name' => 'albums'],
         ['method' => 'PUT', 'name' => 'albums/{id}'],

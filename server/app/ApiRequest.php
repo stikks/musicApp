@@ -82,9 +82,6 @@ class ApiRequest
         }
     }
 
-    public function filterBy($id) {
-
-    }
 
     public function postData($endpoint, $data=array(), $headers=array(), $auth=array()) {
 
@@ -114,8 +111,11 @@ class ApiRequest
         return $this->postData($endpoint, $data, ['Authorization' => 'Bearer '.Auth::getToken()]);
     }
 
-    public function delete($id) {
-
+    public function basicPost($endpoint, $data) {
+        return $this->postData($endpoint, $data, [], [
+            config('api.client_id'),
+            config('api.client_secret'),
+        ]);
     }
 
     public function getUser($token) {

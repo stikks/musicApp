@@ -5,11 +5,13 @@ use App\Artist;
 use App\Genre;
 use App\Services\Paginator;
 use App\Track;
+use App\UserInfo;
 use Carbon\Carbon;
 use App\Services\Settings;
 use Illuminate\Support\Arr;
 use Illuminate\Database\Eloquent\Collection;
 use App\Services\Providers\ProviderResolver;
+use App\Services\Utilities;
 
 class ArtistsRepository
 {
@@ -191,7 +193,7 @@ class ArtistsRepository
         $tracks = Track::with('album.artist')
             ->where('artists', $artistName)
             ->orWhere('artists', 'like', $artistName.'*|*%')
-            ->orderBy('spotify_popularity', 'desc')
+            ->orderBy('views', 'desc')
             ->limit(20)
             ->get();
 
@@ -210,17 +212,50 @@ class ArtistsRepository
     }
 
     /**
-     * Create a new artist.
+     * Create remote provider
      *
      * @param array $params
+     * @param boolean $hasUser
      * @return Artist
      */
-    public function create($params)
+    public function create($hasUser, $params)
     {
         $albums = Arr::pull($params, 'albums', []);
         $genres = Arr::pull($params, 'genres', []);
 
+        $data = ['username' => $params['username']];
+
+        if (!$hasUser) {
+            $data['password'] = Utilities::generateRandomString(10);
+            $name = explode(' ', $params['name']);
+            $data['first_name'] = $name[0];
+            if (count($name) > 1) {
+                unset($name[0]);
+                $data['last_name'] = join(' ', $name);
+            }
+        }
+
+        $apiRequest = app()->make('App\ApiRequest');
+        $response = $apiRequest->basicPost("providers", $data);
+
+        if ($response['status'] == false) {
+
+            return response()->json($response['body'], 422);
+        }
+
+        $userRepository = app()->make('App\Services\Auth\UserInfoRepository');
+
+        if (!$hasUser) {
+            $data['reference'] = $data['username'];
+            $data['permissions'] = config('permissions.artist');
+            $userRepository->create($data);
+        }
+
+        $user = UserInfo::where('reference', $params['username'])->first();
+        $params['user_info_id'] = $user->id;
         $artist = $this->artist->create(Arr::except($params, ['created_at', 'updated_at']));
+        $user->setPermissionsAttribute(config('permissions.artist'));
+        $user->save();
 
         foreach ($albums as $album) {
             $tracks = Arr::pull($album, 'tracks', []);
@@ -232,7 +267,7 @@ class ArtistsRepository
 
             //set album name, id and artist name on each track
             $tracks = array_map(function($track) use($album, $artist) {
-                $track['spotify_popularity'] = Arr::get($track, 'spotify_popularity', 50);
+//                $track['spotify_popularity'] = Arr::get($track, 'spotify_popularity', 50);
                 $track['url'] = Arr::get($track, 'url', null);
                 $track['youtube_id'] = Arr::get($track, 'youtube_id', null);
                 $track['album_name'] = $album->name;
@@ -307,5 +342,25 @@ class ArtistsRepository
         if ($updateInterval === 0) return false;
 
         return $artist->updated_at->addDays($updateInterval) <= Carbon::now();
+    }
+
+    /*
+     *  check if artist record can be created for user with specified username
+     * @param $username
+     * @return bool
+     */
+    public function isPermissible($username) {
+        $user = UserInfo::where('reference', $username)->first();
+        if ($user) {
+            return !$this->artist->where('user_info_id', $user->id)->exists() && !$user->hasPermission('admin');
+        }
+        return true;
+    }
+
+    /*
+     * create artist and user account
+     */
+    public function save(Array $data) {
+        return $this->create(UserInfo::where('reference', $data['username'])->exists() !== null, $data);
     }
 }

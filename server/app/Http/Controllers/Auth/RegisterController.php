@@ -31,7 +31,7 @@ class RegisterController extends Controller
 
     /**
      * ApiRepository service instance.
-     *
+     *a
      * @var UserInfoRepository
      */
     private $apiRequest;
@@ -96,7 +96,7 @@ class RegisterController extends Controller
             $data['last_name'] = join(' ', $name);
         }
 
-        $response = $this->apiRequest->postData("auth/register", $data);
+        $response = $this->apiRequest->basicPost("auth/register", $data);
 
         if ($response['status'] == true) {
             $data['reference'] = $data['username'];

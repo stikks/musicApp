@@ -47,7 +47,7 @@ class Album extends Model {
         'id'            => 'integer',
         'artist_id'     => 'integer',
         'fully_scraped'  => 'integer',
-        'spotify_popularity' => 'integer',
+//        'spotify_popularity' => 'integer',
     ];
 
     /**

@@ -9,6 +9,8 @@ import {UrlAwarePaginator} from "../../pagination/url-aware-paginator.service";
 import {CrupdateAlbumModalComponent} from "../crupdate-album-modal/crupdate-album-modal.component";
 import {ActivatedRoute, Router} from "@angular/router";
 
+import {CurrentUser} from "../../../auth/current-user";
+
 @Component({
     selector: 'albums-page',
     templateUrl: './albums-page.component.html',
@@ -27,13 +29,15 @@ export class AlbumsPageComponent extends DataTable implements OnInit, OnDestroy 
         private modal: ModalService,
         private albums: Albums,
         private route: ActivatedRoute,
-        private router: Router
+        private router: Router,
+        private current_user: CurrentUser
     ) {
         super();
     }
 
     ngOnInit() {
-        const params = {order_by: 'spotify_popularity', 'with': 'tracks'};
+        console.log(this.current_user);
+        const params = {order_by: 'views', 'with': 'tracks'};
         this.paginator.paginate('albums', params).subscribe(response => {
             this.items = response.data;
         });

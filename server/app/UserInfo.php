@@ -95,14 +95,6 @@ class UserInfo extends User
         return $this->belongsToMany('App\Playlist')->withPivot('owner');
     }
 
-//    /*
-//     * get user playlists
-//     * @return array
-//     */
-//    public function getUserPlaylists() {
-//        return $this->belongsToMany('App\Playlist')->where('owner', 1)->withPivot('owner');
-//    }
-
     /**
      * Get user avatar.
      *
@@ -218,5 +210,43 @@ class UserInfo extends User
     public function getAuthIdentifier()
     {
         return $this->reference;
+    }
+
+    /*
+     * artist information
+     */
+    public function artist() {
+        return $this->belongsTo('App\Artist');
+    }
+
+    /**
+     * Get the relationships for the entity.
+     *
+     * @return array
+     */
+    public function getQueueableRelations()
+    {
+        // TODO: Implement getQueueableRelations() method.
+    }
+
+    /**
+     * Get the connection of the entity.
+     *
+     * @return string|null
+     */
+    public function getQueueableConnection()
+    {
+        // TODO: Implement getQueueableConnection() method.
+    }
+
+    /**
+     * Retrieve the model for a bound value.
+     *
+     * @param  mixed $value
+     * @return \Illuminate\Database\Eloquent\Model|null
+     */
+    public function resolveRouteBinding($value)
+    {
+        // TODO: Implement resolveRouteBinding() method.
     }
 }

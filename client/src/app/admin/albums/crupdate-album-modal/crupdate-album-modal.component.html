@@ -17,11 +17,11 @@
                     <input type="text" [(ngModel)]="album.name" id="album-name" name="name" required>
                     <div class="error" *ngIf="errors.name">{{errors.name}}</div>
                 </div>
-                <div class="input-container">
-                    <label for="album-popularity" trans>Popularity</label>
-                    <input type="number" [(ngModel)]="album.spotify_popularity" id="album-popularity" min="1" max="100" name="spotify_popularity">
-                    <div class="error" *ngIf="errors.spotify_popularity">{{errors.spotify_popularity}}</div>
-                </div>
+                <!--<div class="input-container">-->
+                    <!--<label for="album-popularity" trans>Popularity</label>-->
+                    <!--<input type="number" [(ngModel)]="album.spotify_popularity" id="album-popularity" min="1" max="100" name="spotify_popularity">-->
+                    <!--<div class="error" *ngIf="errors.spotify_popularity">{{errors.spotify_popularity}}</div>-->
+                <!--</div>-->
                 <div class="input-container">
                     <label for="album-release-date" trans>Release Date</label>
                     <input type="text" [(ngModel)]="album.release_date" id="album-release-date" name="release_date" required>

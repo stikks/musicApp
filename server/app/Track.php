@@ -61,7 +61,7 @@ class Track extends Model {
         'id'       => 'integer',
         'album_id' => 'integer',
         'number'   => 'integer',
-        'spotify_popularity' => 'integer',
+//        'spotify_popularity' => 'integer',
         'duration' => 'integer',
     ];
 

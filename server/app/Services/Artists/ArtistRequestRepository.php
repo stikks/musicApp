@@ -49,7 +49,8 @@ class ArtistRequestRepository
      */
     public function get()
     {
-        return $this->apiRequest->authGet('me/artist-request');
+        \Log::info('here');
+        return $this->apiRequest->authGet('me/provider-request');
 //        return response()->json($resp['body']->data, 200);
     }
 
@@ -62,6 +63,6 @@ class ArtistRequestRepository
     public function create($params)
     {
         $params['username'] = \Auth::user()->reference;
-        return $this->apiRequest->postAuthorizedData('me/artist-request', $params);
+        return $this->apiRequest->basicPost('me/provider-request', $params);
     }
 }

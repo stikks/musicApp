@@ -11,7 +11,7 @@ export class Track {
 	duration?: number;
 	artists?: string[];
 	youtube_id?: string;
-	spotify_popularity: number;
+	// spotify_popularity: number;
 	album_id: number;
 	temp_id?: string;
 	url?: string;

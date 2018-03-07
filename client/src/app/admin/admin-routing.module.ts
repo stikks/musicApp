@@ -21,6 +21,10 @@ import {PlaylistsPageComponent} from "./playlists-page/playlists-page.component"
 import * as SettingsRoutes from "./settings/settings-routing.module";
 import {CheckPermissionsGuard} from "../guards/check-permissions-guard.service";
 
+import {AggregatorsComponent} from "./aggregators/aggregators.component";
+import {NewAggregatorPageComponent} from "./aggregators/new-aggregator-page/new-aggregator-page.component";
+import {EditAggregatorPageResolver} from "./aggregators/new-aggregator-page/edit-aggregator-page-resolver.service";
+
 const routes: Routes = [
     {path: '', component: AdminComponent, canActivate: [AuthGuard], canActivateChild: [AuthGuard, CheckPermissionsGuard], children: [
         {
@@ -44,6 +48,14 @@ const routes: Routes = [
                 {path: '', component: ArtistsComponent, data: {permissions: ['artists.update']}},
                 {path: 'new', component: NewArtistPageComponent, data: {permissions: ['artists.create']}},
                 {path: ':id/edit', component: NewArtistPageComponent, resolve: {artist: EditArtistPageResolver}, data: {permissions: ['artists.update']}},
+            ]
+        },
+        {
+            path: 'aggregators',
+            children: [
+                {path: '', component: AggregatorsComponent, data: {permissions: ['aggregators.update']}},
+                {path: 'new', component: NewAggregatorPageComponent, data: {permissions: ['aggregators.create']}},
+                {path: ':id/edit', component: NewAggregatorPageComponent, resolve: {artist: EditAggregatorPageResolver}, data: {permissions: ['aggregators.update']}},
             ]
         },
         {

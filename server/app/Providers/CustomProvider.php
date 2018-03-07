@@ -60,14 +60,12 @@ class CustomProvider implements UserProvider
 
         $resp = $this->apiRequest->getUser($token);
 
-        \Log::info($resp);
-
         if (is_null($resp)) {
             return null;
         }
         $user = (array)$resp['body'];
 
-        return $this->model->fetchUserByCredentials($user['username'], $token, $user);
+        return $this->model->fetchUserByCredentials($token, $user);
     }
 
     /**

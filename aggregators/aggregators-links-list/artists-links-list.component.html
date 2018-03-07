@@ -1,0 +1,3 @@
+<a class="hover-underline" [routerLink]="urls.aggregator(aggregator)" *ngFor="let aggregator of aggregators; last as last">
+    <span>{{aggregator}}<ng-container *ngIf="!last">, </ng-container></span>
+</a>

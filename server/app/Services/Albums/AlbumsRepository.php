@@ -105,12 +105,12 @@ class AlbumsRepository
     public function create($params)
     {
         $albumParams = Arr::except($params, ['tracks', 'artist']);
-        $albumParams['spotify_popularity'] = Arr::get($albumParams, 'spotify_popularity', 50);
+//        $albumParams['spotify_popularity'] = Arr::get($albumParams, 'spotify_popularity', 50);
         $album = $this->album->create($albumParams);
 
         //set album name, id and artist name on each track
         $tracks = array_map(function($track) use($album) {
-            $track['spotify_popularity'] = Arr::get($track, 'spotify_popularity', 50);
+//            $track['spotify_popularity'] = Arr::get($track, 'spotify_popularity', 50);
             $track['album_name'] = $album->name;
             $track['album_id'] = $album->id;
             return $track;

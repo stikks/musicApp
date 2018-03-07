@@ -33,6 +33,8 @@ class ArtistAlbumsPaginator
      */
     public function paginate($artistId)
     {
+        \Log::info($artistId);
+
         $prefix = DB::getTablePrefix();
 
         return $this->album

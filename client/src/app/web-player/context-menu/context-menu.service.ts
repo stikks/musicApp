@@ -6,6 +6,7 @@ import {NavigationStart, Router} from "@angular/router";
 import {Artist} from "../../shared/types/models/Artist";
 import {Album} from "../../shared/types/models/Album";
 import {Track} from "../../shared/types/models/Track";
+import {Playlist} from "../../shared/types/models/Playlist";
 import Popper from 'popper.js'
 import {BrowserEvents} from "../../shared/browser-events.service";
 

@@ -1,0 +1,66 @@
+<div class="panel">
+    <form class="edit-main-info" (ngSubmit)="createOrUpdate()" ngNativeValidate>
+        <div class="left-col">
+            <!--<img [src]="getArtistImage()">-->
+            <button type="submit" class="button primary main-button" *ngIf="aggregator.id" trans>Update</button>
+            <button type="submit" class="button primary main-button" *ngIf="!aggregator.id" trans>Create</button>
+        </div>
+        <div class="right-col many-inputs admin-aggregator-edit-inputs">
+            <div class="input-container">
+                <label for="aggregator-name" trans>Name</label>
+                <input type="text" [(ngModel)]="aggregator.name" id="aggregator-name" name="name" required>
+                <div class="error" *ngIf="errors.name">{{errors.name}}</div>
+            </div>
+            <div class="input-container">
+                <label for="aggregator-address" trans>Address</label>
+                <input type="text" [(ngModel)]="aggregator.address" id="aggregator-address" name="popularity">
+                <div class="error" *ngIf="errors.address">{{errors.address}}</div>
+            </div>
+            <!--<div class="input-container with-addon">-->
+                <!--<label for="small-image" trans>Small Image</label>-->
+                <!--<button type="button" class="no-style addon" (click)="openInsertImageModal('small')" tooltip="Upload image">-->
+                    <!--<svg-icon name="file-upload"></svg-icon>-->
+                <!--</button>-->
+                <!--<input type="url" [(ngModel)]="artist.image_small" id="small-image" name="image_small">-->
+                <!--<div class="error" *ngIf="errors.image_small">{{errors.image_small}}</div>-->
+            <!--</div>-->
+            <!--<div class="input-container with-addon">-->
+                <!--<label for="large_image" trans>Large Image</label>-->
+                <!--<button type="button" class="no-style addon" (click)="openInsertImageModal('large')" tooltip="Upload image">-->
+                    <!--<svg-icon name="file-upload"></svg-icon>-->
+                <!--</button>-->
+                <!--<input type="url" [(ngModel)]="artist.image_large" id="large_image" name="image_large">-->
+                <!--<div class="error" *ngIf="errors.image_large">{{errors.image_large}}</div>-->
+            <!--</div>-->
+            <!--<div class="input-container">-->
+                <!--<label for="genres" trans>Genres</label>-->
+                <!--<input type="text" [(ngModel)]="genre" (blur)="addGenre()" enterKeybind id="genres" name="genres" placeholder="Add new..." trans-placeholder>-->
+                <!--<div class="genres tags">-->
+                    <!--<div class="genre tag" *ngFor="let genre of aggregator.artists">-->
+                        <!--<span>{{genre.name}}</span>-->
+                        <!--<button type="button" class="no-style" (click)="removeGenre(genre)">-->
+                            <!--<svg-icon name="close"></svg-icon>-->
+                        <!--</button>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+            <div class="input-container">
+                <label for="biography" trans>Biography</label>
+                <textarea name="biography" id="biography" [(ngModel)]="aggregator.bio"></textarea>
+                <div class="error" *ngIf="errors.bio">{{errors.bio}}</div>
+            </div>
+            <div class="input-container">
+                <label for="cac_number" trans>CAC Number</label>
+                <textarea name="cac_number" id="cac_number" [(ngModel)]="aggregator.cac_number"></textarea>
+                <div class="error" *ngIf="errors.cac_number">{{errors.cac_number}}</div>
+            </div>
+            <!--<div class="input-container">-->
+                <!--<label for="bio-images" trans>Biography Images</label>-->
+                <!--<textarea name="bio-images" id="bio-images" [(ngModel)]="bio.images"></textarea>-->
+                <!--<p trans>Separate images with a new line (enter).</p>-->
+            <!--</div>-->
+        </div>
+    </form>
+
+    <aggregator-artists-table [aggregator]="aggregator"></aggregator-artists-table>
+</div>

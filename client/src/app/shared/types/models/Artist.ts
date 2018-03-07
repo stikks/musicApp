@@ -3,9 +3,10 @@ import {Genre} from "./Genre";
 
 export class Artist {
 	id: number;
+	temp_id: string;
 	name: string;
-	spotify_followers?: number;
-	spotify_popularity?: boolean;
+	// spotify_followers?: number;
+	// spotify_popularity?: boolean;
 	image_small?: string;
 	image_large?: string;
 	fully_scraped?: boolean = true;

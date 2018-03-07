@@ -38,7 +38,7 @@ class Artist extends Model {
      */
     protected $casts = [
         'id' => 'integer',
-        'spotify_popularity' => 'integer',
+//        'spotify_popularity' => 'integer',
         'fully_scraped' => 'integer',
     ];
 
@@ -63,7 +63,7 @@ class Artist extends Model {
 
     public function similar()
     {
-        return $this->belongsToMany('App\Artist', 'similar_artists', 'artist_id', 'similar_id')->orderBy('spotify_popularity', 'desc');
+        return $this->belongsToMany('App\Artist', 'similar_artists', 'artist_id', 'similar_id')->orderBy('views', 'desc');
     }
 
     /**

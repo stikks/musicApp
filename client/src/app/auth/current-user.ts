@@ -6,6 +6,8 @@ import {Group} from "../shared/types/models/Group";
 import { Cookie } from 'ng2-cookies/ng2-cookies';
 
 import * as $ from "jquery";
+import {Artist} from "../shared/types/models/Artist";
+// import {ArtistRequests} from "../web-player/artists/artist-requests.service";
 
 @Injectable()
 export class CurrentUser {
@@ -36,6 +38,11 @@ export class CurrentUser {
      * has pending request
      */
     public artist_request: boolean;
+
+    /*
+     * artist information
+     */
+    public artist: Artist;
 
     // constructor(private httpClient: HttpClient){}
 
@@ -129,24 +136,17 @@ export class CurrentUser {
     /**
      * Init CurrentUser service.
      */
-    public init(params: {user?: User, guestsGroup: Group}) {
+    public init(params: {user?: User, guestsGroup: Group, artist: Artist}) {
         this.guestsGroup = params.guestsGroup;
         this.assignCurrent(params.user);
-        let current_id = this.current.id.toString();
-        if (this.isLoggedIn() && !Cookie.get(this.current.id.toString())) {
+        this.artist = params.artist;
+        if (this.isLoggedIn() && !Cookie.get('__xhRequest__')) {
             $.ajax({
                 url: "/secure/artist_requests",
                 type: "GET",
-                success: function(resp, body){
-                    // if (resp.data === null) {
-                    //     this.artist_request = false;
-                    // }
-                    // else {
-                    //     this.artist_request = true;
-                    // }
-                    let response = resp.data === null;
-                    Cookie.set(current_id, response.toString());
-                    this.artist_request = resp.data === null
+                success: function(resp){
+                    let response = resp.data !== null;
+                    Cookie.set('__xhRequest__', response.toString());
                 }, error: function(err) {
                     console.warn(err)
                 }
@@ -179,11 +179,14 @@ export class CurrentUser {
     }
 
     public hasRequest(): Object {
-        // this.httpClient.get('artist_requests').subscribe(data => {
-        //     console.log(data);
-        // }, err => {
-        //     console.log(err);
-        // });
-        return Boolean(Cookie.get(this.current.id.toString()));
+        return Cookie.get('__xhRequest__') === "true";
+    }
+
+    public isArtist(): Object {
+        return this.hasPermission("albums.create")
+    }
+
+    public isAggregator(): Object {
+        return this.hasPermission("artists.create")
     }
 }

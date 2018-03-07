@@ -40,7 +40,6 @@ class ArtistController extends Controller {
 	public function index()
 	{
         $this->authorize('index', Artist::class);
-
 	    return $this->repository->paginate($this->request->all());
 	}
 
@@ -75,7 +74,11 @@ class ArtistController extends Controller {
     {
         $this->authorize('store', Artist::class);
 
-        return $this->repository->create($this->request->all());
+        if (!$this->repository->isPermissible($this->request->get('username'))) {
+            return $this->error(['error'=>'An artist account with this username already exists']);
+        }
+
+        return $this->repository->save($this->request->all());
     }
 
     /**

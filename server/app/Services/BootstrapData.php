@@ -1,5 +1,6 @@
 <?php namespace App\Services;
 
+use App\Artist;
 use App\User;
 use App\Group;
 use App\Localization;
@@ -75,6 +76,8 @@ class BootstrapData
             $bootstrap['user'] = $this->loadUserFollowedUsers($bootstrap['user']);
         }
 
+//        $bootstrap['artist'] = !is_null($bootstrap['user']) ? Artist::where('user_info_id', $bootstrap['user']->id)->first(): null;
+
         return base64_encode(json_encode($bootstrap));
     }
 
@@ -84,6 +87,7 @@ class BootstrapData
     private function getCurrentUser()
     {
         $user = $this->request->user();
+
 //        $info = $this->request->user();
 //        $user = UserInfo::where('reference', $info->username)->first();
 
@@ -102,7 +106,6 @@ class BootstrapData
      */
     private function loadUserFollowedUsers(UserInfo $user)
     {
-//        return $user;
         return $user->load(['followedUsers' => function(BelongsToMany $q) {
             return $q->select('user_info.id', 'user_info.avatar');
         }]);
@@ -153,7 +156,6 @@ class BootstrapData
 
         //get user selected language
         $user = $this->request->user();
-//        $user = UserInfo::where('reference', $info->username)->first();
         $userLang = $user ? $user->language : null;
 
         //get default language if user has not selected any languages

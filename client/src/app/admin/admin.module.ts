@@ -39,6 +39,7 @@ import { AdsPageComponent } from './ads-page/ads-page.component';
 import {PlaylistsPageComponent} from "./playlists-page/playlists-page.component";
 import {SettingsModule} from "./settings/settings.module";
 
+
 @NgModule({
     imports:      [
         SharedModule,
@@ -95,7 +96,7 @@ import {SettingsModule} from "./settings/settings.module";
         LocalizationsResolve,
         MailTemplatesResolve,
         ModalService,
-        EditArtistPageResolver,
+        EditArtistPageResolver
     ]
 })
 export class AdminModule { }

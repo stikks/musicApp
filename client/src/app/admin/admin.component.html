@@ -55,11 +55,15 @@
                 <svg-icon name="settings"></svg-icon>
                 <span trans>Settings</span>
             </a>
-            <a class="menu-item" routerLink="artists" *ngIf="currentUser.hasPermission('artists.update')" routerLinkActive="router-link-active">
+            <a class="menu-item" routerLink="artists" *ngIf="currentUser.hasPermission('artists.create')" routerLinkActive="router-link-active">
                 <svg-icon name="mic"></svg-icon>
                 <span trans>Artists</span>
             </a>
-            <a class="menu-item" routerLink="artists" *ngIf="currentUser.hasPermission('artists.create')" routerLinkActive="router-link-active">
+            <a class="menu-item" routerLink="artists" *ngIf="currentUser.hasPermission('artists.update') && !currentUser.hasPermission('artists.create')" routerLinkActive="router-link-active">
+                <svg-icon name="mic"></svg-icon>
+                <span trans>Artist Profile</span>
+            </a>
+            <a class="menu-item" routerLink="aggregators" *ngIf="currentUser.hasPermission('artists.create')" routerLinkActive="router-link-active">
                 <svg-icon name="mic"></svg-icon>
                 <span trans>Aggregators</span>
             </a>

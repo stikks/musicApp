@@ -169,13 +169,13 @@ export class TrackListComponent implements OnInit, OnChanges, OnDestroy {
     /**
      * Get formatted track popularity value.
      */
-    public getTrackPopularity(track: Track) {
-        if ( ! track.spotify_popularity) {
-            track.spotify_popularity = 50;
-        }
-
-        return track.spotify_popularity + '%';
-    }
+    // public getTrackPopularity(track: Track) {
+    //     if ( ! track.spotify_popularity) {
+    //         track.spotify_popularity = 50;
+    //     }
+    //
+    //     return track.spotify_popularity + '%';
+    // }
 
     /**
      * Show context menu for specified track.

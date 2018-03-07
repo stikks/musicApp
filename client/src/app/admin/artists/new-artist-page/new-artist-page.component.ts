@@ -45,7 +45,7 @@ export class NewArtistPageComponent implements OnInit {
         private artists: Artists,
         private route: ActivatedRoute,
         private toast: ToastService,
-        private router: Router,
+        private router: Router
     ) {}
 
     ngOnInit() {

@@ -1,0 +1,68 @@
+<div class="backdrop"></div>
+
+<form class="modal-content" (ngSubmit)="confirm()" ngNativeValidate>
+    <div class="modal-header">
+        <h2 class="modal-title">
+            <span trans>Request to be an Artist</span>
+        </h2>
+        <button type="button" (click)="close()" class="close-button no-style icon-button">
+            <svg-icon name="close"></svg-icon>
+        </button>
+    </div>
+    
+    <div class="content">
+        <!--<div class="img-container">-->
+            <!--<img [src]="model.image">-->
+            <!--<button class="no-style upload-img-button" type="button" (click)="openImageUploadModal()">-->
+                <!--<svg-icon name="add-a-photo"></svg-icon>-->
+            <!--</button>-->
+        <!--</div>-->
+
+        <div class="many-inputs">
+            <div class="input-container name-input">
+                <label for="stage_name" trans>Stage Name</label>
+                <input type="text" [(ngModel)]="model.stage_name" id="stage_name" name="name" placeholder="Enter Stage Name" required>
+                <div class="error" *ngIf="errors.stage_name">{{errors.stage_name}}</div>
+            </div>
+
+            <div class="input-container description-input">
+                <label for="address" trans>Physical Address</label>
+                <textarea [(ngModel)]="model.address" id="address" name="address" placeholder="Enter physical address." trans-placeholder required></textarea>
+                <div class="error" *ngIf="errors.address">{{errors.address}}</div>
+            </div>
+
+            <div class="input-container name-input">
+                <label for="phone" trans>Phone</label>
+                <input type="text" [(ngModel)]="model.phone" id="phone" name="phone" placeholder="Enter Phone" required>
+                <div class="error" *ngIf="errors.phone">{{errors.phone}}</div>
+            </div>
+
+            <div class="input-container name-input">
+                <label for="phone" trans>Instagram</label>
+                <input type="text" [(ngModel)]="model.instagram_id" id="instagram_id" name="instagram_id" placeholder="Instagram Username">
+                <div class="error" *ngIf="errors.instagram_id">{{errors.instagram_id}}</div>
+            </div>
+
+            <div class="input-container name-input">
+                <label for="phone" trans>Twitter</label>
+                <input type="text" [(ngModel)]="model.twitter_id" id="twitter_id" name="twitter_id" placeholder="Twitter Username">
+                <div class="error" *ngIf="errors.twitter_id">{{errors.twitter_id}}</div>
+            </div>
+
+            <div class="input-container name-input">
+                <label for="phone" trans>Facebook</label>
+                <input type="text" [(ngModel)]="model.facebook_id" id="facebook_id" name="facebook_id" placeholder="Facebook Username">
+                <div class="error" *ngIf="errors.facebook_id">{{errors.facebook_id}}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="buttons right">
+        <button (click)="close()" type="button" class="button cancel cancel-button" trans>Close</button>
+        <button type="submit" class="button primary submit-button">
+            <span trans>Create</span>
+        </button>
+    </div>
+
+    <loading-indicator [isVisible]="loading" class="overlay opacity-high"></loading-indicator>
+</form>

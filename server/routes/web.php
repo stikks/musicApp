@@ -10,7 +10,6 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-
 Route::group(['prefix' => 'secure'], function () {
     Route::get('bootstrap-data', 'BootstrapController@getBootstrapData');
     Route::get('update', 'UpdateController@show');

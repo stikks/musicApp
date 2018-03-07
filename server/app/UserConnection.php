@@ -20,17 +20,22 @@ class UserConnection
         $this->connection = $memcached;
     }
 
-    public function fetchUserByCredentials($sessionId, $token, $data) {
+    public function fetchUserByCredentials($token, $data) {
 
-        $storedData = array('token'=>$token, 'username'=>$data['username'], 'email'=>$data['email'], 'id'=>$data['id']);
+        $data['token'] = $token;
         $unique = md5(time().uniqid());
-        if($this->create($unique, $storedData)) {
-            $userData = $this->connection->get($sessionId);
+        if($this->create($unique, $data)) {
+            $userData = $this->connection->get($unique);
 
             if (! is_null($userData)) {
-                setcookie('___media_xcred___', $unique, 2147483647, '/', config('api.cookie_domain'));
-                $user = UserInfo::where('reference', $storedData['username'])->first();
-//                $user = new Account($userData);
+                $this->updateSession($unique);
+                $user = UserInfo::where('reference', $data['username'])->exists() ?
+                    UserInfo::where('reference', $data['username'])->first() : UserInfo::create([
+                        'reference' => $data['username'],
+                        'permissions' => $data['permissions'],
+                        'first_name' => $data['first_name'],
+                        'last_name' => $data['last_name']
+                    ]);
                 return $user;
             }
         }
@@ -53,6 +58,15 @@ class UserConnection
     public function getToken($sessionId) {
         $obj = $this->connection->get($sessionId);
         return !is_null($obj) ? $obj['token'] : null;
+    }
+
+    public function updateSession($sessionId) {
+        if (isset($_COOKIE['___media_xcred___'])) {
+            $data = $_COOKIE['___media_xcred___'];
+            $this->delete($data);
+            setcookie("___media_xcred___", "", time() - 3600, '/');
+        }
+        setcookie('___media_xcred___', $sessionId, 2147483647, '/', config('api.cookie_domain'));
     }
 
 }

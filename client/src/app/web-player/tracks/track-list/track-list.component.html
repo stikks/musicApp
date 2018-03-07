@@ -8,7 +8,7 @@
         <div class="track-list-column album-name" *ngIf="showAlbum" trans>Album</div>
         <div class="track-list-column added-at" *ngIf="showAddedAt"><svg-icon name="date-range"></svg-icon></div>
         <div class="track-list-column track-duration"><svg-icon name="access-time"></svg-icon></div>
-        <div class="track-list-column track-popularity" *ngIf="showPopularity"><svg-icon name="trending-up"></svg-icon></div>
+        <!--<div class="track-list-column track-popularity" *ngIf="showPopularity"><svg-icon name="trending-up"></svg-icon></div>-->
     </div>
 
     <div class="track-list-row track-list-item"
@@ -33,11 +33,11 @@
         <a class="track-list-column album-name hover-underline" *ngIf="showAlbum && track.album" [routerLink]="urls.album(track.album, track.artists[0])">{{track.album.name}}</a>
         <div class="track-list-column added-at" *ngIf="showAddedAt">{{track['added_at']}}</div>
         <div class="track-list-column track-duration">{{track['formatted_duration']}}</div>
-        <div class="track-list-column track-popularity" *ngIf="showPopularity">
-            <div class="popularity-track">
-                <div class="popularity-track-inner" [style.width]="getTrackPopularity(track)"></div>
-            </div>
-        </div>
+        <!--<div class="track-list-column track-popularity" *ngIf="showPopularity">-->
+            <!--<div class="popularity-track">-->
+                <!--<div class="popularity-track-inner" [style.width]="getTrackPopularity(track)"></div>-->
+            <!--</div>-->
+        <!--</div>-->
     </div>
 </ng-container>
 

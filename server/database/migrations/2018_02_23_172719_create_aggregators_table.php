@@ -13,8 +13,14 @@ class CreateAggregatorsTable extends Migration
      */
     public function up()
     {
-        Schema::table('aggregators', function (Blueprint $table) {
-            //
+        Schema::create('aggregators', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name')->unique();
+            $table->integer('user_info_id')->unsigned();
+            $table->text('bio')->nullable();
+            $table->text('address');
+            $table->text('cac_number');
+            $table->timestamps();
         });
     }
 
@@ -25,8 +31,6 @@ class CreateAggregatorsTable extends Migration
      */
     public function down()
     {
-        Schema::table('aggregators', function (Blueprint $table) {
-            //
-        });
+        Schema::drop('aggregators');
     }
 }
