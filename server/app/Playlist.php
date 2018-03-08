@@ -52,7 +52,7 @@ class Playlist extends Model {
      */
     public function editors()
     {
-        return $this->belongsToMany('App\User')->wherePivot('owner', 1);
+        return $this->belongsToMany('App\UserInfo')->wherePivot('owner', 1);
     }
 
     /**

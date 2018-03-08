@@ -93,9 +93,7 @@ class PlaylistController extends Controller
      */
     public function show($id)
     {
-        $playlist = $this->playlist->withCount('tracks')->findOrFail($id);
-
-        $playlist->editors = [$this->request->user()->info];
+        $playlist = $this->playlist->with('editors')->withCount('tracks')->findOrFail($id);
 
         $this->authorize('show', $playlist);
 
@@ -120,15 +118,15 @@ class PlaylistController extends Controller
     {
         $this->authorize('store', Playlist::class);
 
-        $playlist = $this->playlist->create($this->request->all());
-        if ($playlist) {
-            $resp = DBConnector::createRaw('playlist_user', ['user_id'=>$this->request->user()->info->id,
-                'playlist_id'=>$playlist->id,
-                'owner' => true
-            ]);
-        }
+//        $playlist = $this->playlist->create($this->request->all());
+//        if ($playlist) {
+//            $resp = DBConnector::createRaw('playlist_user', ['user_id'=>$this->request->user()->info->id,
+//                'playlist_id'=>$playlist->id,
+//                'owner' => true
+//            ]);
+//        }
 
-//        $playlist = $this->request->user()->playlists()->create($this->request->all(), ['owner' => 1]);
+        $playlist = $this->request->user()->playlists()->create($this->request->all(), ['owner' => 1]);
 
         return $playlist;
     }

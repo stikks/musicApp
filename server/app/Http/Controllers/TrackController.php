@@ -41,7 +41,7 @@ class TrackController extends Controller {
         $this->authorize('index', Track::class);
 
         $params = $this->request->all();
-        $params['order_by'] = isset($params['order_by']) ? $params['order_by'] : 'spotify_popularity';
+        $params['order_by'] = isset($params['order_by']) ? $params['order_by'] : 'plays';
 
 	    return (new Paginator($this->track))->paginate($params);
 	}

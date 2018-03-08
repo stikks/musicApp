@@ -9,6 +9,7 @@ use App\Console\Commands\DeleteTracksWithoutAlbum;
 use App\Console\Commands\ExportTranslations;
 use App\Console\Commands\GenerateTsClasses;
 use App\Console\Commands\ResetDemoAdminAccount;
+use App\Console\Commands\ListenWorker;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -27,6 +28,7 @@ class Kernel extends ConsoleKernel
         DeleteTracksWithoutAlbum::class,
         ResetDemoAdminAccount::class,
         CreateStorageSymlink::class,
+        ListenWorker::class
     ];
 
     /**

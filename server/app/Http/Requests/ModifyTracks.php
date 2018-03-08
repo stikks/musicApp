@@ -26,7 +26,7 @@ class ModifyTracks extends BaseFormRequest
             'album_name'         => 'required|min:1|max:255',
             'duration'           => 'required|integer|min:1',
             'artists'            => 'required|string|min:1|max:255',
-            'spotify_popularity' => 'min:1|max:100|nullable',
+//            'spotify_popularity' => 'min:1|max:100|nullable',
             'album_id'           => 'required|min:1|exists:albums,id',
         ];
 

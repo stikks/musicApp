@@ -15,7 +15,7 @@ use App\Playlist;
 use App\Setting;
 use App\Track;
 use App\Upload;
-use App\User;
+use App\UserInfo;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 use Auth;
@@ -38,7 +38,7 @@ class AuthServiceProvider extends ServiceProvider
         'ReportPolicy'      => \App\Policies\ReportPolicy::class,
         Upload::class       => \App\Policies\UploadPolicy::class,
         Account::class         => \App\Policies\UserPolicy::class,
-//        User::class         => \App\Policies\UserPolicy::class,
+        UserInfo::class         => \App\Policies\UserPolicy::class,
 //        Group::class        => \App\Policies\GroupPolicy::class,
         Setting::class      => \App\Policies\SettingPolicy::class,
         Page::class         => \App\Policies\PagePolicy::class,

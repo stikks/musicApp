@@ -9,7 +9,7 @@ use Auth;
 use ClassesWithParents\D;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
-use App\User;
+use App\UserInfo;
 use Illuminate\Http\Request;
 use App\Services\DBConnector;
 use DB;
@@ -17,7 +17,7 @@ use DB;
 class UsersController extends Controller {
 
     /**
-     * @var User
+     * @var UserInfo
      */
     private $model;
 
@@ -39,11 +39,11 @@ class UsersController extends Controller {
     /**
      * UsersController constructor.
      *
-     * @param User $user
+     * @param UserInfo $user
      * @param UserRepository $userRepository
      * @param Request $request
      */
-    public function __construct(User $user, UserRepository $userRepository, Request $request, ApiRequest $apiRequest)
+    public function __construct(UserInfo $user, UserRepository $userRepository, Request $request, ApiRequest $apiRequest)
     {
         $this->model = $user;
         $this->request = $request;
@@ -60,7 +60,7 @@ class UsersController extends Controller {
      */
     public function index()
     {
-        $this->authorize('index', User::class);
+        $this->authorize('index', UserInfo::class);
 
         return $this->userRepository->paginateUsers($this->request->all());
     }
@@ -72,26 +72,28 @@ class UsersController extends Controller {
      */
     public function show($id)
     {
-        $currUser = $this->request->user()->info;
+//        $currUser = $this->request->user();
+//
+//        $response = $this->apiRequest->basicGet("users/$currUser->id");
+//
+//        $user = $response['body'];
 
-        $response = $this->apiRequest->basicGet("users/$currUser->id");
+        $user = $this->request->user();
 
-        $user = $response['body'];
+        $user = $this->model->with(['social_profiles', 'followedUsers', 'followers', 'playlists' => function($q) {
+            $q->with(['tracks.album' => function($query) {
+                return $query->limit(1);
+            }])->where('public', 1)->whereHas('tracks');
+        }])->findOrFail($id);
 
-//        $user = $this->model->with(['groups', 'social_profiles', 'followedUsers', 'followers', 'playlists' => function($q) {
-//            $q->with(['tracks.album' => function($query) {
-//                return $query->limit(1);
-//            }])->where('public', 1)->whereHas('tracks');
-//        }])->findOrFail($id);
+//        $user->social_profiles = DBConnector::where('social_profiles', ['user_id'=>$user->id], false);
+//        $user->followers = DBConnector::where('follows', ['followed_id'=>$user->id], false);
+//        $user->followedUsers = DBConnector::where('follows', ['follower_id'=>$user->id], false);
+//        $user->playlists = $this->setPlaylistImage($this->request->user()->playlists());
 
-        $user->social_profiles = DBConnector::where('social_profiles', ['user_id'=>$user->id], false);
-        $user->followers = DBConnector::where('follows', ['followed_id'=>$user->id], false);
-        $user->followedUsers = DBConnector::where('follows', ['follower_id'=>$user->id], false);
-        $user->playlists = $this->setPlaylistImage($this->request->user()->playlists());
+        $this->authorize('show', $user);
 
-//        $this->authorize('show', $user);
-
-        return (array)$user;
+        return $user;
     }
 
     /**
@@ -102,7 +104,7 @@ class UsersController extends Controller {
      */
     public function store(ModifyUsers $request)
     {
-        $this->authorize('store', User::class);
+        $this->authorize('store', UserInfo::class);
 
         $user = $this->userRepository->create($this->request->all());
 
@@ -115,7 +117,7 @@ class UsersController extends Controller {
      * @param integer $id
      * @param ModifyUsers $request
      *
-     * @return User
+     * @return UserInfo
      */
     public function update($id, ModifyUsers $request)
     {
@@ -135,7 +137,7 @@ class UsersController extends Controller {
      */
     public function deleteMultiple()
     {
-        $this->authorize('destroy', User::class);
+        $this->authorize('destroy', UserInfo::class);
 
         $this->validate($this->request, [
             'ids' => 'required|array|min:1'
@@ -189,15 +191,15 @@ class UsersController extends Controller {
     private function setPlaylistImage($playlists)
     {
         return $playlists->map(function($playlist) {
-//            if ( ! $playlist->getAttribute('image') && isset($playlist->tracks->first()->album->image)) {
-//                $playlist->image = $playlist->tracks->first()->album->image;
-//            }
-//
-//            if ( ! $playlist->image) {
-//                $playlist->image = url('assets/images/default/artist_small.jpg');
-//            }
-//
-//            unset($playlist->tracks);
+            if ( ! $playlist->getAttribute('image') && isset($playlist->tracks->first()->album->image)) {
+                $playlist->image = $playlist->tracks->first()->album->image;
+            }
+
+            if ( ! $playlist->image) {
+                $playlist->image = url('assets/images/default/artist_small.jpg');
+            }
+
+            unset($playlist->tracks);
             $playlist->image = url('assets/images/default/artist_small.jpg');
 
             return $playlist;

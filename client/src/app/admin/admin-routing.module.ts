@@ -47,6 +47,12 @@ const routes: Routes = [
             ]
         },
         {
+            path: 'artists/:id/edit',
+            component: NewArtistPageComponent,
+            resolve: {artist: EditArtistPageResolver},
+            data: {permissions: ['artists.update']}
+        },
+        {
             path: 'albums',
             component: AlbumsPageComponent,
             data: {permissions: ['albums.update']}

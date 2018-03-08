@@ -34,7 +34,7 @@ export class TracksPageComponent extends DataTable implements OnInit, OnDestroy 
     }
 
     ngOnInit() {
-        const params = {order_by: 'spotify_popularity', 'with': 'album,lyric'};
+        const params = {order_by: 'plays', 'with': 'album,lyric'};
         this.paginator.paginate('tracks', params).subscribe(response => {
             this.items = this.formatTrackDuration(response.data);
         });

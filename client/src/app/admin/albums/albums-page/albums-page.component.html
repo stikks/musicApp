@@ -1,7 +1,10 @@
 <section class="flex-table-panel spacing">
     <div class="flex-table-panel-header">
         <div class="header-inner default" *ngIf="!selectedItems.length">
-            <div class="left" trans>Albums</div>
+            <!--<div class="left" trans>Albums</div>-->
+            <div class="left">
+                <button type="button" class="button primary" (click)="openCrupdateAlbumModal()" trans>New Album</button>
+            </div>
             <div class="right">
                 <div class="input-container">
                     <input type="text" class="search" placeholder="Search albums" trans-placeholder [formControl]="searchQuery">

@@ -34,6 +34,10 @@
                         <svg-icon name="dashboard"></svg-icon>
                         <span trans>Admin Area</span>
                     </a>
+                    <a class="dropdown-item" [routerLink]="['admin', 'artists', currentUser.artist.id, 'edit']" *ngIf="currentUser.isArtist()" routerLinkActive="router-link-active">
+                        <svg-icon name="mic"></svg-icon>
+                        <span trans>Profile</span>
+                    </a>
                     <a class="dropdown-item" #menuItem routerLink="/account-settings">
                         <svg-icon name="account-circle"></svg-icon>
                         <span trans>Account Settings</span>

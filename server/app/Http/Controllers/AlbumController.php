@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\ModifyAlbums;
 use App\Services\Albums\AlbumsRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use App\Services\Artists\ArtistAlbumsPaginator;
 
 class AlbumController extends Controller {
 
@@ -20,16 +21,24 @@ class AlbumController extends Controller {
      */
     private $repository;
 
+    /*
+     * paginator for artist albums
+     */
+    private $albumsPaginator;
+
+
     /**
      * Create new AlbumController instance.
      *
      * @param AlbumsRepository $repository
      * @param Request $request
+     * @param ArtistAlbumsPaginator $albumsPaginator
      */
-	public function __construct(AlbumsRepository $repository, Request $request)
+	public function __construct(AlbumsRepository $repository, Request $request, ArtistAlbumsPaginator $albumsPaginator)
 	{
         $this->request = $request;
         $this->repository = $repository;
+        $this->albumsPaginator = $albumsPaginator;
     }
 
 	/**
@@ -41,7 +50,9 @@ class AlbumController extends Controller {
 	{
 		$this->authorize('index', Album::class);
 
-	    return $this->repository->paginate($this->request->all());
+		$artistId = $this->request->get('artist_id');
+
+	    return is_null($artistId) ? $this->repository->paginate($this->request->all()) : $this->albumsPaginator->paginate($artistId);
 	}
 
     /**

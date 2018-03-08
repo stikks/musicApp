@@ -27,7 +27,7 @@ export class ArtistsComponent extends DataTable implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        this.paginator.paginate('artists', {order_by: 'spotify_popularity'}).subscribe(response => {
+        this.paginator.paginate('artists', {order_by: 'views'}).subscribe(response => {
             this.items = response.data;
         });
     }

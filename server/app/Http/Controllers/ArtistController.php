@@ -26,23 +26,23 @@ class ArtistController extends Controller {
      * @param Request $request
      * @param ArtistsRepository $repository
      */
-	public function __construct(Request $request, ArtistsRepository $repository)
-	{
+    public function __construct(Request $request, ArtistsRepository $repository)
+    {
         $this->request = $request;
         $this->repository = $repository;
     }
 
-	/**
-	 * Paginate all artists.
-	 *
-	 * @return LengthAwarePaginator
-	 */
-	public function index()
-	{
+    /**
+     * Paginate all artists.
+     *
+     * @return LengthAwarePaginator
+     */
+    public function index()
+    {
         $this->authorize('index', Artist::class);
 
-	    return $this->repository->paginate($this->request->all());
-	}
+        return $this->repository->paginate($this->request->all());
+    }
 
     /**
      * Return artist matching specified id or name.
@@ -85,29 +85,29 @@ class ArtistController extends Controller {
      * @param ModifyArtists $validate
      * @return Artist
      */
-	public function update($id, ModifyArtists $validate)
-	{
-		$this->authorize('update', Artist::class);
+    public function update($id, ModifyArtists $validate)
+    {
+        $this->authorize('update', Artist::class);
 
-	    return $this->repository->update($id, $this->request->all());
-	}
+        return $this->repository->update($id, $this->request->all());
+    }
 
     /**
      * Remove specified artists from database.
      *
      * @return \Illuminate\Http\JsonResponse
      */
-	public function destroy()
-	{
-		$this->authorize('destroy', Artist::class);
+    public function destroy()
+    {
+        $this->authorize('destroy', Artist::class);
 
-	    $this->validate($this->request, [
-		    'ids'   => 'required|array',
-		    'ids.*' => 'required|integer'
+        $this->validate($this->request, [
+            'ids'   => 'required|array',
+            'ids.*' => 'required|integer'
         ]);
 
-	    $this->repository->delete($this->request->get('ids'));
+        $this->repository->delete($this->request->get('ids'));
 
-		return $this->success();
-	}
+        return $this->success();
+    }
 }

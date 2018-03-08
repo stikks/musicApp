@@ -2,6 +2,8 @@ import {Injectable} from '@angular/core';
 import {User} from "../shared/types/models/User";
 import {Group} from "../shared/types/models/Group";
 
+import {Artist} from "../shared/types/models/Artist";
+
 @Injectable()
 export class CurrentUser {
 
@@ -26,6 +28,11 @@ export class CurrentUser {
      * redirect to login page, if any.
      */
     public redirectUri?: string;
+
+    /*
+     * Current artist model
+     */
+    public artist: Artist;
 
     /**
      * Get property of currently logged in user model.
@@ -117,9 +124,10 @@ export class CurrentUser {
     /**
      * Init CurrentUser service.
      */
-    public init(params: {user?: User, guestsGroup: Group}) {
+    public init(params: {user?: User, guestsGroup: Group, artist: Artist}) {
         this.guestsGroup = params.guestsGroup;
         this.assignCurrent(params.user);
+        this.artist = params.artist
     }
 
     /**
@@ -140,5 +148,9 @@ export class CurrentUser {
         this.cachedPermissions = Object.assign(permissions, this.get('permissions') || {});
 
         return this.cachedPermissions;
+    }
+
+    public isArtist(): boolean {
+        return this.hasPermission('albums.create') && !this.hasPermission('artists.create')
     }
 }

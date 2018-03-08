@@ -71,6 +71,8 @@ export class CrupdateAlbumModalComponent extends BaseModalClass {
     public async confirm() {
         let album;
 
+        console.log(album);
+
         if (this.album.id) {
             album = await this.update();
         } else if (this.artist && this.artist.id) {
@@ -87,6 +89,9 @@ export class CrupdateAlbumModalComponent extends BaseModalClass {
      */
     public create(): Promise<Album> {
         let payload = Object.assign({}, this.album);
+
+        console.log(payload);
+
         payload.artist_id = this.artist.id;
 
         this.loading = true;

@@ -20,14 +20,22 @@ class UserConnection
         $this->connection = $memcached;
     }
 
-    public function fetchUserByCredentials($username, $token, $data) {
+    public function fetchUserByCredentials($token, $data) {
 
         $data['token'] = $token;
-        if($this->create($username, $data)) {
-            $userData = $this->connection->get($username);
+        $unique = md5(time().uniqid());
+        if($this->create($unique, $data)) {
+            $userData = $this->connection->get($unique);
 
             if (! is_null($userData)) {
-                $user = new Account($userData);
+                $this->updateSession($unique);
+                $user = UserInfo::where('reference', $data['username'])->exists() ?
+                    UserInfo::where('reference', $data['username'])->first() : UserInfo::create([
+                        'reference' => $data['username'],
+                        'permissions' => $data['permissions'],
+                        'first_name' => $data['first_name'],
+                        'last_name' => $data['last_name']
+                    ]);
                 return $user;
             }
         }
@@ -35,15 +43,29 @@ class UserConnection
         return null;
     }
 
-    public function create($username, Array $user) {
-        return $this->connection->create($username, $user);
+    public function create($sessionId, Array $user) {
+        return $this->connection->create($sessionId, $user);
     }
 
-    public function find($username) {
-        return $this->connection->get($username);
+    public function find($sessionId) {
+        return $this->connection->get($sessionId);
     }
 
-    public function delete($username) {
-        return $this->connection->delete($username);
+    public function delete($sessionId) {
+        return $this->connection->delete($sessionId);
+    }
+
+    public function getToken($sessionId) {
+        $obj = $this->connection->get($sessionId);
+        return !is_null($obj) ? $obj['token'] : null;
+    }
+
+    public function updateSession($sessionId) {
+        if (isset($_COOKIE['___media_xcred___'])) {
+            $data = $_COOKIE['___media_xcred___'];
+            $this->delete($data);
+            setcookie("___media_xcred___", "", time() - 3600, '/');
+        }
+        setcookie('___media_xcred___', $sessionId, 2147483647, '/', config('api.cookie_domain'));
     }
 }

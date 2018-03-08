@@ -18,8 +18,8 @@ class ModifyArtists extends BaseFormRequest
                 'required', 'string', 'min:1', 'max:255',
                 Rule::unique('artists')->ignore($artistId)
             ],
-            'spotify_popularity' => 'integer|min:1|max:100',
-            'spotify_followers' => 'integer|min:0|nullable',
+//            'spotify_popularity' => 'integer|min:1|max:100',
+//            'spotify_followers' => 'integer|min:0|nullable',
             'image_small' => 'string|min:1|max:255',
             'image_large' => 'string|min:1|max:255',
             'bio' => 'json',
@@ -33,7 +33,7 @@ class ModifyArtists extends BaseFormRequest
                 'albums.*.release_date' => 'string|min:1|max:255',
                 'albums.*.image' => 'string|min:1|max:255',
                 'albums.*.artist_id' => 'integer|exists:artists,id',
-                'albums.*.spotify_popularity' => 'integer|min:1|max:100',
+//                'albums.*.spotify_popularity' => 'integer|min:1|max:100',
 
                 'albums.*.tracks' => 'array',
                 'albums.*.tracks.*.name' => 'required|string|min:1|max:255',
@@ -42,7 +42,7 @@ class ModifyArtists extends BaseFormRequest
                 'albums.*.tracks.*.duration' => 'required|integer|min:1',
                 'albums.*.tracks.*.artists' => 'string|nullable',
                 'albums.*.tracks.*.youtube_id' => 'string|min:1|max:255',
-                'albums.*.tracks.*.spotify_popularity' => 'integer|min:1|max:100',
+//                'albums.*.tracks.*.spotify_popularity' => 'integer|min:1|max:100',
                 'albums.*.tracks.*.album_id' => 'integer|min:1',
                 'albums.*.tracks.*.url' => 'string|min:1|max:255',
             ]);

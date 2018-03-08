@@ -49,6 +49,7 @@ export class LoginComponent {
         this.isLoading = true;
 
         this.auth.login(this.model).subscribe(response => {
+
             this.bootstrapper.bootstrap(response.data);
 
             //TODO: Move this into auth service, so other components can re-use

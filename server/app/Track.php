@@ -61,7 +61,7 @@ class Track extends Model {
         'id'       => 'integer',
         'album_id' => 'integer',
         'number'   => 'integer',
-        'spotify_popularity' => 'integer',
+//        'spotify_popularity' => 'integer',
         'duration' => 'integer',
     ];
 
@@ -83,7 +83,7 @@ class Track extends Model {
      */
     public function users()
     {
-        return $this->belongsToMany('App\User')->withTimestamps();
+        return $this->belongsToMany('App\UserInfo')->withTimestamps();
     }
 
     /**

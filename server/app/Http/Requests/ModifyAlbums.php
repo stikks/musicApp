@@ -23,7 +23,7 @@ class ModifyAlbums extends BaseFormRequest
                 })->ignore($albumId)
             ],
             'artist_id'          => 'required|integer|exists:artists,id',
-            'spotify_popularity' => 'integer|min:1|max:100|nullable',
+//            'spotify_popularity' => 'integer|min:1|max:100|nullable',
             'release_date'       => 'date|nullable',
             'image'              => 'url|nullable',
         ];

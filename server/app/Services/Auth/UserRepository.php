@@ -1,7 +1,7 @@
 <?php namespace App\Services\Auth;
 
 use App\Services\Settings;
-use App\User;
+use App\UserInfo as User;
 use App\Group;
 
 class UserRepository {

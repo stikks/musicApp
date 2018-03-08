@@ -15,7 +15,7 @@ class ModifyUsers extends BaseFormRequest
             'first_name'    => 'alpha|min:2|max:255|nullable',
             'last_name'     => 'alpha|min:2|max:255|nullable',
             'permissions'   => 'array',
-            'groups'        => 'array',
+//            'groups'        => 'array',
             'password'      => 'min:3|max:255',
             'email'         => "email|min:3|max:255|unique:users,email,$userId",
         ];

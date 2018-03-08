@@ -7,7 +7,7 @@ export class Album {
 	release_date?: string;
 	image?: string;
 	artist_id?: number;
-	spotify_popularity?: boolean;
+	// spotify_popularity?: boolean;
 	fully_scraped: boolean;
 	temp_id?: string;
 	artist?: Artist;

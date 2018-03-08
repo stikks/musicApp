@@ -1,11 +1,13 @@
 <?php namespace App\Services;
 
+use App\Playlist;
 use App\User;
 use App\Group;
+use App\Artist;
 use App\Localization;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use App\Account;
+use App\UserInfo;
 
 
 class BootstrapData
@@ -37,18 +39,21 @@ class BootstrapData
      * @param Request $request
      * @param Localization $localization
      * @param Group $groups
+     * @param Playlist $playlist
      */
     public function __construct(
         Settings $settings,
         Request $request,
         Localization $localization,
-        Group $groups
+        Group $groups,
+        Playlist $playlist
     )
     {
         $this->groups = $groups;
         $this->request = $request;
         $this->settings = $settings;
         $this->localization = $localization;
+        $this->playlist = $playlist;
     }
 
     /**
@@ -67,12 +72,14 @@ class BootstrapData
 //        $bootstrap['guests_group'] = $this->groups->where('guests', 1)->first();
         $bootstrap['i18n'] = $this->getLocalizationsData() ?: null;
         $bootstrap['user'] = $this->getCurrentUser();
+        $bootstrap['playlists'] = $this->playlist->get();
+        $bootstrap['artist'] = null;
 
         if ($bootstrap['user']) {
             $bootstrap['tracks'] = $this->getUserTracks();
-            $bootstrap['playlists'] = $this->getUserPlaylists();
             $bootstrap['user'] = $this->loadUserFollowedUsers($bootstrap['user']);
-            $bootstrap['user'] = (array)$bootstrap['user']->info;
+            $bootstrap['playlists'] = $this->getUserPlaylists();
+            $bootstrap['artist'] = Artist::where('user_info_id', $bootstrap['user']->id)->first();
         }
 
         return base64_encode(json_encode($bootstrap));
@@ -98,12 +105,11 @@ class BootstrapData
      * @param User $user
      * @return User
      */
-    private function loadUserFollowedUsers(Account $user)
+    private function loadUserFollowedUsers(UserInfo $user)
     {
-        return $user;
-//        return $user->load(['followedUsers' => function(BelongsToMany $q) {
-//            return $q->select('users.id', 'users.avatar');
-//        }]);
+        return $user->load(['followedUsers' => function(BelongsToMany $q) {
+            return $q->select('user_info.id', 'user_info.avatar');
+        }]);
     }
 
     /**
@@ -113,11 +119,10 @@ class BootstrapData
      */
     private function getUserTracks()
     {
-        return $this->request->user()->tracks();
 //        $user = $this->request->user()->info;
 //        $artist = DB::table('artists')->where('user_id', $user->id)->first();
 //        return !is_null($artist) ? DB::table('artists')->where('user_id', $user->id)->get() : array();
-//        return $this->request->user()->tracks()->pluck('tracks.id')->toArray();
+        return $this->request->user()->tracks()->pluck('tracks.id')->toArray();
     }
 
     /**
@@ -127,15 +132,15 @@ class BootstrapData
      */
     private function getUserPlaylists()
     {
-        return $this->request->user()->getUserPlaylists();
-//        return $this->request->user()
-//            ->playlists()
-//            ->with(['editors' => function(BelongsToMany $q) {
-//                return $q->compact();
-//            }])
-//            ->select('playlists.id', 'playlists.name')
-//            ->get()
-//            ->toArray();
+//        return $this->request->user()->getUserPlaylists();
+        return $this->request->user()
+            ->playlists()
+            ->with(['editors' => function(BelongsToMany $q) {
+                return $q->compact();
+            }])
+            ->select('playlists.id', 'playlists.name')
+            ->get()
+            ->toArray();
     }
 
     /**

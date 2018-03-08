@@ -185,6 +185,9 @@ return [
          * Custom Service Providers...
          */
         App\Providers\SpotifyHttpClientServiceProvider::class,
+
+        // Rabbitmq integration
+        Mookofe\Tail\ServiceProvider::class,
     ],
 
     /*
@@ -236,6 +239,9 @@ return [
 
         'Socialite' => Laravel\Socialite\Facades\Socialite::class,
         'Sentry' => Sentry\SentryLaravel\SentryFacade::class,
+
+        // rabbitmq integration
+        'Tail' => Mookofe\Tail\Facades\Tail::class,
     ],
 
 ];

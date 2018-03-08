@@ -2,7 +2,7 @@
 
 namespace App\Policies;
 
-use App\Account as User;
+use App\UserInfo as User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class AlbumPolicy
